@@ -22,6 +22,7 @@ class AuthController extends Controller
 
         // Validate the users input
         $request->validated();
+        log::info($request);
         log::info("Users input is valid");
 
         // Create a new user
