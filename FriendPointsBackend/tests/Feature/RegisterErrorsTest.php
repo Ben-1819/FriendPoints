@@ -98,7 +98,7 @@ describe("Tests to check that the error messages are correct whenever the valida
 
     // After each test
     afterEach(function(){
-
+        log::info("Test in the RegisterLastNameErrorsGroupComplete");
     });
 
     /**
@@ -106,7 +106,19 @@ describe("Tests to check that the error messages are correct whenever the valida
      * when the last_name field is empty
      */
     it("tests that the correct error message is returned when the last_name field is left empty", function(){
+        //Make a post request to the register route
+        $response = $this->postJson("/api/register",[
+            "first_name" => "Test",
+            "last_name" => "",
+            "email" => "example@gmail.com",
+            "password" => "password",
+        ]);
 
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "last_name" => "Last name is a required field",
+            ]);
     });
 
     /**
@@ -114,7 +126,19 @@ describe("Tests to check that the error messages are correct whenever the valida
      * when the last_name field is not a string
      */
     it("tests that the correct error message is returned when the last_name field is not a string", function(){
+        // Make a post request to the register route
+        $response = $this->postJson("/api/register",[
+            "first_name" => "Test",
+            "last_name" => 1,
+            "email" => "example@gmail.com",
+            "password" => "password",
+        ]);
 
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "last_name" => "Last name must be of data type string",
+            ]);
     });
 
     /**
@@ -122,7 +146,22 @@ describe("Tests to check that the error messages are correct whenever the valida
      * when the last_name field is greater than 55 characters
      */
     it("tests that the correct error message is returned when the last_name field is greater than 55 characters", function(){
+        // Use faker
+        $faker = Faker\Factory::create();
 
+        // Make a post request to the register route
+        $response = $this->postJson("/api/register",[
+            "first_name" => "Test",
+            "last_name" => $faker->realTextBetween(56, 60),
+            "email" => "example@gmail.com",
+            "password" => "password",
+        ]);
+
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "last_name" => "Last name can not be longer than 55 characters",
+            ]);
     });
 })->group("RegisterLastNameErrorTests");
 
