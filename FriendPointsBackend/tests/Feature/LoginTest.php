@@ -189,12 +189,16 @@ describe("Tests to check that the logout method works as intented", function(){
 describe("Tests to check that the getUser method works as intented", function(){
     // Before each test
     beforeEach(function(){
-
+        // Create a user using the user factory
+        $this->user = User::factory()->createOne([
+            // Manually set the users password to password
+            "password" => "password",
+        ]);
     });
 
     // After each test
     afterEach(function(){
-
+        log::info("Test in the GetUserTests group complete");
     });
 
     /**
@@ -202,7 +206,21 @@ describe("Tests to check that the getUser method works as intented", function(){
      * there is a user logged in
      */
     it("tests that the getUser method works when there is a user logged in", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Make a get request to the getUser route
+        $response = $this->withHeader('Authorization', "Bearer $token")
+            ->getJson("/api/user");
+
+        // Declare what the response should be
+        $response->assertStatus(200)
+            ->assertJsonFragment([
+                "id" => $this->user->id,
+                "first_name" => $this->user->first_name,
+                "last_name" => $this->user->last_name,
+                "email" => $this->user->email,
+            ]);
     });
 
     /**
@@ -210,7 +228,24 @@ describe("Tests to check that the getUser method works as intented", function(){
      * when there is no user logged in
      */
     it("tests that the getUser method doesn't work when there is no user logged in", function(){
+        // Disable middleware for this test
+        $this->withoutMiddleware();
 
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
+
+        // Mock Auth::user to return null
+        Auth::shouldReceive("user")->andReturn(null);
+
+        // Make a get request to the getUser route
+        $response = $this->withHeader('Authorization', "Bearer $token")
+            ->getJson("/api/user");
+
+        // Declare what the response should be
+        $response->assertStatus(404)
+            ->assertJson([
+                "error" => "User not found",
+            ]);
     });
 
     /**
@@ -218,6 +253,19 @@ describe("Tests to check that the getUser method works as intented", function(){
      * when the JWT is invalid
      */
     it("tests that the getUser method doesn't work when the users JWT is invalid", function(){
+        // Disable middleware for this test
+        $this->withoutMiddleware();
 
+        // Tell the test that when auth receives the user it should throw a JWT exception
+        Auth::shouldReceive('user')->andThrow(new JWTException('Token error'));
+
+        // Make a get request to the getUser route
+        $response = $this->getJson("/api/user");
+
+        // Declare what the response should be
+        $response->assertStatus(500)
+            ->assertJson([
+                "error" => "Failed to fetch user profile",
+            ]);
     });
 })->group("GetUserTests");
