@@ -3,6 +3,8 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 uses(RefreshDatabase::class);
 
@@ -123,28 +125,61 @@ describe("Tests to check that the login method works as intented", function(){
 describe("Tests to check that the logout method works as intented", function(){
     // Before each test
     beforeEach(function(){
-
+        // Create a user using the user factory
+        $this->user = User::factory()->createOne([
+            // Manually set the password to password
+            "password" => "password",
+        ]);
     });
 
     // After each test
     afterEach(function(){
-
+        log::info("Test in LogoutTests group completed");
     });
 
     /**
      * Test to check the logout method returns the correct status
      * when the logout method is successful
      */
-    it("tests that the correct error message is returned when the logout method is successful", function(){
+    it("tests that the correct message is returned when the logout method is successful", function(){
+        // Create a JWT for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Make a post request to the logout route
+        $response = $this->withHeader('Authorization', "Bearer $token")
+            ->postJson("/api/logout");
+
+        // Declare what the response should be
+        $response->assertOk()
+            ->assertJson([
+                "message" => "Successfully logged out",
+            ]);
     });
 
     /**
      * Test to check the logout method returns the correct status
-     * and error message when the logout method is invalid
+     * and error message when the JWT can not be invalidated
      */
     it("tests that the logout method returns the correct status and error message when the logout method is invalid", function(){
+        // Disable middleware for this test
+        $this->withoutMiddleware();
+        // Create a JWT for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Mock getToken
+        JWTAuth::shouldReceive("getToken")->once()->andReturn($token);
+        // Tell the test to throw an exception when the token is invalidated
+        JWTAuth::shouldReceive('invalidate')->once()->with($token)->andThrow(new JWTException("Token invalidation failed"));
+
+        // Make a post request to the logout route
+        $response = $this->withHeader('Authorization', "Bearer $token")
+            ->postJson("/api/logout");
+
+        // Declare what the response should be
+        $response->assertStatus(500)
+            ->assertJson([
+                "error" => "Failed to logout, please try again",
+            ]);
     });
 })->group("LogoutTests");
 
