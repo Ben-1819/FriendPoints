@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
+use App\Models\User;
 
 uses(RefreshDatabase::class);
 
@@ -11,12 +12,16 @@ uses(RefreshDatabase::class);
 describe("Tests to check that the login method works as intented", function(){
     // Before each test
     beforeEach(function(){
-
+        // Create a user using the user factory
+        $this->user = User::factory()->createOne([
+            // Set the password to password
+            "password" => Hash::make("password"),
+        ]);
     });
 
     // After each test
     afterEach(function(){
-
+        log::info("Test in the LoginTests group complete");
     });
 
     /**
@@ -24,7 +29,19 @@ describe("Tests to check that the login method works as intented", function(){
      * valid data is entered and the account exists
      */
     it("tests that the login method works when valid data is entered and the account exists", function(){
+        // Make a post request to the login route
+        $response = $this->postJson("/api/login",[
+            // Set the email to the created users email
+            "email" => $this->user->email,
+            // Set the password to password
+            "password" => "password",
+        ]);
 
+        // Define what the response should be
+        $response->assertJsonStructure([
+            "token",
+            "expires_in",
+        ]);
     });
 
     /**
@@ -32,7 +49,17 @@ describe("Tests to check that the login method works as intented", function(){
      * the user enters invalid data and the account exists
      */
     it("tests that the login method doesn't work when the user enters invalid data and the account does not exist", function(){
+        // Make a post request to the login route
+        $response = $this->postJson("/api/login",[
+            "email" => $this->user->email,
+            "password" => ""
+        ]);
 
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "password" => "Password is a required field",
+            ]);
     });
 
     /**
@@ -40,7 +67,17 @@ describe("Tests to check that the login method works as intented", function(){
      * the user enters invalid credentials and the account exists
      */
     it("tests that the login method works when the user enters invalid credentials and the account exists", function(){
+        // Make a post request to the login route
+        $response = $this->postJson("/api/login",[
+            "email" => $this->user->email,
+            "password" => "PASSWORD",
+        ]);
 
+        // Declare what the response should be
+        $response->assertStatus(401)
+            ->assertJsonStructure([
+                "error",
+            ]);
     });
 
     /**
@@ -48,7 +85,17 @@ describe("Tests to check that the login method works as intented", function(){
      * the user enters valid data and the account does not exist
      */
     it("tests that the login method does not work when the user enters valid data and the account doesn't exist", function(){
+        // Make a post request to the login route
+        $response = $this->postJson("/api/login", [
+            "email" => "example@email.com",
+            "password" => "Password",
+        ]);
 
+        // Declare what the response should be
+        $response->assertStatus(401)
+            ->assertJsonStructure([
+                "error",
+            ]);
     });
 
     /**
@@ -56,7 +103,17 @@ describe("Tests to check that the login method works as intented", function(){
      * the user enters invalid data and the account does not exist
      */
     it("tests that the login method does not work when the user enters invalid data and the account doesn't exist", function(){
+        // Make a post request to the login route
+        $response = $this->postJson("/api/login",[
+            "email" => "",
+            "password" => "PASSWORD",
+        ]);
 
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "email" => "Email is a required field",
+            ]);
     });
 })->group("LoginTests");
 
