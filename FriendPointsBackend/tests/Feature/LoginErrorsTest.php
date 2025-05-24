@@ -18,7 +18,7 @@ describe("Tests to check that the error messages for the email field are correct
 
     // After each test
     afterEach(function(){
-
+        log::info("Test in the LoginEmailErrors group complete");
     });
 
     /**
@@ -26,7 +26,37 @@ describe("Tests to check that the error messages for the email field are correct
      * when the email field is left blank
      */
     it("tests that the correct error message is returned when the email field is left blank", function(){
+        // Make a post request to the login route
+        $response = $this->postJson("/api/login",[
+            // Leave the email field empty
+            "email" => "",
+            "password" => "password",
+        ]);
 
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "email" => "Email is a required field",
+            ]);
+    });
+
+    /**
+     * Test that the correct error message is returned
+     * when the email field is not a string value
+     */
+    it("tests that the correct error message is returned when the email field is not a string value", function(){
+        // Make a post request to the login route
+        $response = $this->postJson("/api/login",[
+            // Put an integer in the email field
+            "email" => 1,
+            "password" => "password",
+        ]);
+
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "email" => "Email must be of data type string",
+            ]);
     });
 
     /**
@@ -34,7 +64,18 @@ describe("Tests to check that the error messages for the email field are correct
      * when the email field is not an email value
      */
     it("tests that the correct error message is returned when the email field is not an email value", function(){
+        // Make a post request to the login route
+        $response = $this->postJson("/api/login",[
+            // Use a string that is not an email as the email
+            "email" => "notanemail",
+            "password" => "password",
+        ]);
 
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "email" => "Email must be a valid email",
+            ]);
     });
 
     /**
@@ -42,7 +83,21 @@ describe("Tests to check that the error messages for the email field are correct
      * when the email field is longer than 55 characters
      */
     it("tests that the correct error message is returned when the email field is longer than 55 characters", function(){
+        // Use faker
+        $faker = Faker\Factory::create();
 
+        // Make a post request to the login route
+        $response = $this->postJson("/api/login",[
+            // Use faker to enter a string greater than 55 characters into the email field
+            "email" => $faker->realTextBetween(50, 55) . "@gmail.com",
+            "password" => "password",
+        ]);
+
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "email" => "Email must be 55 characters or less",
+            ]);
     });
 })->group("LoginEmailErrors");
 
