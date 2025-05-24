@@ -114,7 +114,7 @@ describe("Tests to check that the error messages for the password field are corr
 
     // After each test
     afterEach(function(){
-
+        log::info("Tests in the LoginPasswordErrors group complete");
     });
 
     /**
@@ -122,7 +122,18 @@ describe("Tests to check that the error messages for the password field are corr
      * when the password field is left empty
      */
     it("checks that the correct error message is returned when the password field is left empty", function(){
+        // Make a post request to the login route
+        $response = $this->postJson("/api/login",[
+            "email" => "example@gmail.com",
+            // Leave the password field blank
+            "password" => "",
+        ]);
 
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "password" => "Password is a required field",
+            ]);
     });
 
     /**
@@ -130,7 +141,18 @@ describe("Tests to check that the error messages for the password field are corr
      * when the password field is not a string value
      */
     it("tests that the correct error message is returned when the password field is not a string value", function(){
+        // Make a post request to the login route
+        $response = $this->postJson("/api/login",[
+            "email" => "example@gmail.com",
+            // Enter an integer value as the password
+            "password" => 1234567,
+        ]);
 
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "password" => "Password must be a string",
+            ]);
     });
 
     /**
@@ -138,6 +160,17 @@ describe("Tests to check that the error messages for the password field are corr
      * when the password field is less than 6 characters long
      */
     it("tests that the correct error message is returned when the password field is less than 6 characters long", function(){
+        // Make a post request to the login route
+        $response = $this->postJson("/api/login",[
+            "email" => "example@gmail.com",
+            // Make the password less than 6 characters
+            "password" => "pass",
+        ]);
 
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "password" => "The password field must be at least 6 characters",
+            ]);
     });
 })->group("LoginPasswordErrors");
