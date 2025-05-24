@@ -8,7 +8,7 @@ Route::controller(AuthController::class)->group(function(){
     Route::post("/register", "register");
     Route::post("/login", "login");
 });
-Route::controller(AuthController::class)->middleware("auth:api")->group(function(){
+Route::controller(AuthController::class)->middleware("jwt")->group(function(){
     Route::get("/user", "getUser");
     Route::post("/logout", "logout");
 });
