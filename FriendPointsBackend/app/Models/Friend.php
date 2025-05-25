@@ -14,5 +14,17 @@ class Friend extends Model
         "points",
     ];
 
+    /**
+     * Define the relationship between Friend and User for the user_id column
+     */
+    public function friend(){
+        return $this->belongsTo(User::class);
+    }
 
+    /**
+     * Define the relationship between Friend and User for the owner_id column
+     */
+    public function owner(){
+        return $this->belongsTo(User::class(), "owner_id", "id");
+    }
 }

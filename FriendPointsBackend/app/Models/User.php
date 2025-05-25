@@ -63,4 +63,19 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    /**
+     * Define the relationship between users and friends for the user_id column
+     */
+    public function asFriend()
+    {
+        return $this->hasMany(Friend::class);
+    }
+
+    /**
+     * Define the relationship between users and friends for the owner_id column
+     */
+    public function owner(){
+        return $this->hasMany(Friend::class, "owner_id");
+    }
 }
