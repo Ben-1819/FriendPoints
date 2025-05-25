@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('friends', function (Blueprint $table) {
             $table->id();
             $table->foreignId("user_id");
+            $table->foreignId("owner_id");
             $table->string("group");
             $table->integer("points");
             $table->timestamps();
