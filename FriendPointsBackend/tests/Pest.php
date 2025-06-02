@@ -1,4 +1,5 @@
 <?php
+use App\Models\Friend;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,4 +47,19 @@ expect()->extend('toBeOne', function () {
 function something()
 {
     // ..
+}
+
+/**
+ * CreateFriend function - Uses the FriendFactory to create a friend
+ */
+function createFriend($user){
+    // Use the friend factory to create a friend
+    $friend = Friend::factory()->createOne([
+        // Set the owner id to the id of the user passed in
+        "owner_id" => $user->id,
+        "group" => "both",
+    ]);
+
+    // Return the friend
+    return $friend;
 }
