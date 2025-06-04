@@ -2,6 +2,8 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
+use App\Models\User;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 uses(RefreshDatabase::class);
 
@@ -12,12 +14,13 @@ uses(RefreshDatabase::class);
 describe("Tests to check that the index method in the FriendController works as intented", function(){
     // Before each test
     beforeEach(function(){
-
+        // Create a user using the user factory
+        $this->user = User::factory()->createOne();
     });
 
     // After each test
     afterEach(function(){
-
+        log::info("Test in the friendIndexTests group complete");
     });
 
     /**
@@ -25,7 +28,21 @@ describe("Tests to check that the index method in the FriendController works as 
      * there is a logged in user
      */
     it("tests the index method works when there is a logged in user", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Create a friend for the user
+        $friend = createFriend($this->user);
+
+        // Make a get request to the index route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->getJson("/api/index");
+
+        // Declare what the response should be
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                "friends",
+            ]);
     });
 
     /**
@@ -33,7 +50,17 @@ describe("Tests to check that the index method in the FriendController works as 
      * when there is no logged in user
      */
     it("tests the index method doesn't work when there is no user logged in", function(){
+        // Create a friend for the user
+        $friend = createFriend($this->user);
 
+        // Make a get request to the friend index route
+        $response = $this->getJson("/api/index");
+
+        // Declare what the response should be
+        $response->assertStatus(401)
+            ->assertJson([
+                "error" => "Unauthorised"
+            ]);
     });
 })->group("FriendIndexTests");
 
