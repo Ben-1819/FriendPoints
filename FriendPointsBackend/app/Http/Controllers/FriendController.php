@@ -50,7 +50,7 @@ class FriendController extends Controller
          * is either "Both" or "Group 1"
          */
         $group1_friends = Friend::where("owner_id", Auth::user()->id)
-            ->whereIn("group", ["Both"], "Group1")
+            ->whereIn("group", ["Both", "Group1"])
             ->orderBy("points", "desc")
             ->get();
         log::info("All group 1 friends successfully retrieved");
