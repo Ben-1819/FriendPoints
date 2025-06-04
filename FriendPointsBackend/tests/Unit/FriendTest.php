@@ -65,10 +65,67 @@ describe("Tests to check that the index method in the FriendController works as 
 })->group("FriendIndexTests");
 
 /**
- * Test that check the groupIndex method
+ * Test that check the group1Index method
  * in FriendController works as intented
  */
-describe("Tests to check that the groupIndex method in FriendController works as intented", function(){
+describe("Tests to check that the group1Index method in FriendController works as intented", function(){
+    // Before each test
+    beforeEach(function(){
+        // Create a user
+        $this->user = User::factory()->create([
+            "password" => "password",
+        ]);
+
+        // Create a friend for the user
+        $this->friend = createFriend($this->user);
+    });
+
+    // After each test
+    afterEach(function(){
+        log::info("Test in the FriendGroup1Index group complete");
+    });
+
+    /**
+     * Test that the group1Index method works
+     * when there is a logged in user
+     */
+    it("tests the group1Index method works when there is a logged in user", function(){
+        // Create a token for the user
+        $token  = JWTAuth::fromUser($this->user);
+
+        // Make a get request to the group1Index route
+        $response = $this->withHeader('Authorization', "Bearer $token")
+            ->getJson("/api/group1/index");
+
+        // Declare what the response should be
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                "friends",
+            ]);
+    });
+
+    /**
+     * Test that the group1Index method doesn't work
+     * when there is no logged in user
+     */
+    it("tests the group1Index method doesn't work when there is no logged in user", function(){
+        // Make a get request to the group1Index route
+        $response = $this->getJson("/api/group1/index");
+
+        // Declare what the response should be
+        $response->assertStatus(401)
+            ->assertJson([
+                "error" => "Unauthorised",
+            ]);
+    });
+})->group("FriendGroup1IndexTests");
+
+
+/**
+ * Test that check the group2Index method
+ * in FriendController works as intented
+ */
+describe("Tests to check that the group2Index method in FriendController works as intented", function(){
     // Before each test
     beforeEach(function(){
 
@@ -80,32 +137,32 @@ describe("Tests to check that the groupIndex method in FriendController works as
     });
 
     /**
-     * Test that the groupIndex method works
+     * Test that the group2Index method works
      * when there is a logged in user and the
      * group being searched for exists
      */
-    it("tests the groupIndex method works when there is a logged in user and the group being searched for exists", function(){
+    it("tests the group2Index method works when there is a logged in user and the group being searched for exists", function(){
 
     });
 
     /**
-     * Test that the groupIndex method doesn't work
+     * Test that the group2Index method doesn't work
      * when there is no logged in user and the group
      * being searched for exists
      */
-    it("tests the groupIndex method doesn't work when there is no logged in user and the group being searched for exixts", function(){
+    it("tests the group2Index method doesn't work when there is no logged in user and the group being searched for exixts", function(){
 
     });
 
     /**
-     * Test that the groupIndex method doesn't work
+     * Test that the group2Index method doesn't work
      * when there is a logged in user and the group
      * being searched for doesn't exist
      */
-    it("tests the groupIndex method doesn't work when there is a logged in user and the group being searched for doesn't exist", function(){
+    it("tests the group2Index method doesn't work when there is a logged in user and the group being searched for doesn't exist", function(){
 
     });
-})->group("FriendGroupIndexTests");
+})->group("FriendGroup2IndexTests");
 
 /**
  * Tests that check the store method
