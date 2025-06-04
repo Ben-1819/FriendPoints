@@ -128,12 +128,18 @@ describe("Tests to check that the group1Index method in FriendController works a
 describe("Tests to check that the group2Index method in FriendController works as intented", function(){
     // Before each test
     beforeEach(function(){
+        // Create a user using the user factory
+        $this->user = User::factory()->create([
+            "password" => "password",
+        ]);
 
+        // Create a friend for the user
+        $this->friend = createFriend($this->user);
     });
 
     // After each test
     afterEach(function(){
-
+        log::info("Test in the FriendGroup2IndexTests complete");
     });
 
     /**
@@ -142,25 +148,33 @@ describe("Tests to check that the group2Index method in FriendController works a
      * group being searched for exists
      */
     it("tests the group2Index method works when there is a logged in user and the group being searched for exists", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Make a get request to the group2Index route
+        $response = $this->withHeader('Authorization', "Bearer $token")
+            ->getJson("/api/group2/index");
+
+        // Declare what the response should be
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                "friends",
+            ]);
     });
 
     /**
      * Test that the group2Index method doesn't work
-     * when there is no logged in user and the group
-     * being searched for exists
+     * when there is no logged in user
      */
-    it("tests the group2Index method doesn't work when there is no logged in user and the group being searched for exixts", function(){
+    it("tests the group2Index method doesn't work when there is no logged in user", function(){
+        // Make a get request to the group2Index route
+        $response = $this->getJson("/api/group2/index");
 
-    });
-
-    /**
-     * Test that the group2Index method doesn't work
-     * when there is a logged in user and the group
-     * being searched for doesn't exist
-     */
-    it("tests the group2Index method doesn't work when there is a logged in user and the group being searched for doesn't exist", function(){
-
+        // Declare what the response should be
+        $response->assertStatus(401)
+            ->assertJson([
+                "error" => "Unauthorised",
+            ]);
     });
 })->group("FriendGroup2IndexTests");
 
