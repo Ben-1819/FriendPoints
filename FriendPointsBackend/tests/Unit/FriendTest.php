@@ -186,12 +186,17 @@ describe("Tests to check that the group2Index method in FriendController works a
 describe("Tests that check the store method in the FriendController works as intented", function(){
     // Before each test
     beforeEach(function(){
-
+        // Create a user using the user factory
+        $this->user = User::factory()->create([
+            "password" => "password",
+        ]);
+        // Create a second user to be made a friend
+        $this->user2 = User::factory()->createOne();
     });
 
     // After each test
     afterEach(function(){
-
+        log::info("Test in the FriendStoreTests group complete");
     });
 
     /**
@@ -199,7 +204,21 @@ describe("Tests that check the store method in the FriendController works as int
      * data is entered and there is a user logged in
      */
     it("tests the store method works when valid data is used and there is a user logged in", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
+        $id = $this->user2->id;
+        // Make a post request to the store route
+        $response = $this->withHeader('Authorization', "Bearer $token")
+            ->postJson("/api/$id/store",[
+                "group" => "Both",
+                "points" => 500,
+            ]);
 
+        // Declare what the response should be
+        $response->assertStatus(201)
+            ->assertJson([
+                "success" => "New friend successfully added"
+            ]);
     });
 
     /**
@@ -208,7 +227,23 @@ describe("Tests that check the store method in the FriendController works as int
      * user logged in
      */
     it("tests the store method doesn't work when invalid data is entered and there is a user logged in", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        $id = $this->user2->id;
+        // make a post request to the store route
+        $response = $this->withHeader('Authorization', "Bearer $token")
+            ->postJson("/api/$id/store",[
+                // Leave the group field empty
+                "group" => "",
+                "points" => 500
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "group" => "Group is a required field",
+            ]);
     });
 
     /**
@@ -217,7 +252,18 @@ describe("Tests that check the store method in the FriendController works as int
      * user logged in
      */
     it("tests the store method doesn't work when valid data is entered and there is no user logged in", function(){
+        $id = $this->user2->id;
+        // Make a post request to the store route
+        $response = $this->postJson("/api/$id/store",[
+            "group" => "Both",
+            "points" => 500,
+        ]);
 
+        // Declare what the response should be
+        $response->assertStatus(401)
+            ->assertJson([
+                "error" => "Unauthorised",
+            ]);
     });
 })->group("FriendStoreTests");
 
