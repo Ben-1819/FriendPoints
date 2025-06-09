@@ -274,47 +274,51 @@ describe("Tests that check the store method in the FriendController works as int
 describe("Tests that the check the show method in the FriendController works as intented", function(){
     // Before each test
     beforeEach(function(){
+        // Create a user using the user factory
+        $this->user = User::factory()->create([
+            "password" => "password",
+        ]);
 
+        // Create a friend for the user
+        $this->friend = createFriend($this->user);
     });
 
     // After each test
     afterEach(function(){
-
+        log::info("Test in the FriendShowTests group complete");
     });
 
     /**
-     * Test the show method works when the friend
-     * being shown exists and there is a user logged in
+     * Test the show method works there is a user logged in
      */
     it("tests that the show method works when the friend being shown exists and there is a user logged in", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Make a get request to the show options route
+        $response  = $this->withHeader("Authorization", "Bearer $token")
+            ->getJson("/api/showOptions");
+
+        // Declare what the response should be
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                "options",
+            ]);
     });
 
     /**
-     * Test the show method doesn't work when the
-     * friend being shown does not exist and there
-     * is a user logged in
+     * Test the show method doesn't work when
+     * there is no user logged in
      */
-    it("tests that the show method doesn't work when the friend being shown does not exist and there is a user logged in", function(){
+    it("tests that the show method doesn't work when there is no user logged in", function(){
+        // Make a get request to the showOptionsRoute
+        $response = $this->getJson("/api/showOptions");
 
-    });
-
-    /**
-     * Test the show method doesn't work when the
-     * friend being shown exists and there is no
-     * user logged in
-     */
-    it("tests that the show method doesn't work when the friend being shown exists and there is no user logged in", function(){
-
-    });
-
-    /**
-     * Test the show method doesn't work wen the
-     * friend being shown exists but doesn't belong
-     * to the currently logged in user
-     */
-    it("tests that the show method doesn't work when the friend being shown exists but doesn't belong to the currently logged in user", function(){
-
+        // Declare what the response should be
+        $response->assertStatus(401)
+            ->assertJson([
+                "error" => "Unauthorised",
+            ]);
     });
 })->group("FriendShowTests");
 
