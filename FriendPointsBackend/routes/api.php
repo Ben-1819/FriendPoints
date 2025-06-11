@@ -29,5 +29,5 @@ Route::controller(FriendController::class)->middleware(["jwt", "friendOwner"])->
     Route::put("/{id}/update", "update");
     Route::put("/{id}/addPoints", "addPoints");
     Route::put("/{id}/removePoints", "removePoints");
-    Route::put("/{id}/delete", "destroy");
+    Route::delete("/{id}/delete", "destroy");
 });
