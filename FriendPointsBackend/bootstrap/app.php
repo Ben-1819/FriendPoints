@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\JWTMiddleware;
+use App\Http\Middleware\FriendOwner;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -15,7 +16,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->append(\Illuminate\Http\Middleware\HandleCors::class);
         $middleware->alias([
-            "jwt" => JwtMiddleware::class
+            "jwt" => JwtMiddleware::class,
+            "friendOwner" => FriendOwner::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

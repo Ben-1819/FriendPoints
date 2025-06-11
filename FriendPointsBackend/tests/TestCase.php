@@ -3,7 +3,7 @@
 namespace Tests;
 
 use App\Http\Middleware\JWTMiddleware;
-
+use App\Http\Middleware\FriendOwner;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -13,5 +13,6 @@ abstract class TestCase extends BaseTestCase
         parent::setUp();
 
         app('router')->aliasMiddleware('jwt', JWTMiddleware::class);
+        app('router')->aliasMiddleware('friendOwner', FriendOwner::class);
     }
 }
