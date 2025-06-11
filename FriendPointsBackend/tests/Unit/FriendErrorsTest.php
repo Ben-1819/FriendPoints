@@ -196,12 +196,18 @@ describe("tests that check the correct error message is returned when the valida
 describe("tests that check the correct error message is returned when the validation rules for the group field are broken when updating a friend", function(){
     // Before each test
     beforeEach(function(){
+        // Create a user with the user factory
+        $this->user = User::factory()->create([
+            "password" => "password",
+        ]);
 
+        // Create a friend belonging to the user
+        $this->friend = createFriend($this->user);
     });
 
     // After each test
     afterEach(function(){
-
+        log::info("Test in FriendUpdateGroupErrorsTests complete");
     });
 
     /**
@@ -209,7 +215,24 @@ describe("tests that check the correct error message is returned when the valida
      * when the group field is left empty
      */
     it("tests the correct error message is returned when the group field is left empty", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Create a variable and set it to the friends id
+        $friendID = $this->friend->id;
+
+        // Make a put request to the update route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->putJson("/api/$friendID/update",[
+                // Leave the group field blank
+                "group" => "",
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "group" => "Group is a required field",
+            ]);
     });
 
     /**
@@ -217,7 +240,24 @@ describe("tests that check the correct error message is returned when the valida
      * when the group field is not a string value
      */
     it("tests the correct error message is returned when the group field is not a string value", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Create a variable and set it to the friend's id
+        $friendID = $this->friend->id;
+
+        // Make a put request to the update route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->putJson("/api/$friendID/update",[
+                // Enter an integer in the group field
+                "group" => 2,
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "group" => "Group must be a string value",
+            ]);
     });
 
     /**
@@ -225,7 +265,27 @@ describe("tests that check the correct error message is returned when the valida
      * when the group field is longer than 55 characters
      */
     it("tests the correct error message is returned when the group field is longer than 55 characters long", function(){
+        // Use faker
+        $faker = Faker\Factory::create();
 
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
+
+        // Create a variable and set it to the friend's id
+        $friendID = $this->friend->id;
+
+        // Make a put request to the update route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->putJson("/api/$friendID/update",[
+                // Make the group field larger than 55 characters
+                "group" => $faker->realTextBetween(56, 60),
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "group" => "Group can not exceed 55 characters",
+            ]);
     });
 })->group("FriendUpdateGroupErrorsTests");
 
