@@ -287,7 +287,7 @@ class FriendController extends Controller
             "before" => $friend->points,
             "after" => $updated_friend->points,
             "change" => $updated_friend->points - $friend->points,
-        ], 204);
+        ], 200);
     }
 
     /**
@@ -327,7 +327,7 @@ class FriendController extends Controller
             "before" => $friend->points,
             "after" => $updated_friend->points,
             "change" => $friend->points - $updated_friend->points,
-        ], 204);
+        ], 200);
     }
 
     /**
