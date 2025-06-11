@@ -362,4 +362,75 @@ describe("tests that check the correct error message is returned when the valida
     });
 })->group("FriendAddPointsErrorsTests");
 
+/**
+ * Tests that check the correct error message is
+ * returned when the validation rules for the points
+ * field are broken when decreasing a friends points
+ */
+describe("tests that check the correct error message is returned when the validation rules for the points field are broken when decreasing a friends points", function(){
+    // Before each test
+    beforeEach(function(){
+        // Create a user using the user factory
+        $this->user = User::factory()->create([
+            "password" => "password",
+        ]);
 
+        // Create a friend for the user
+        $this->friend = createFriend($this->user);
+    });
+
+    // After each test
+    afterEach(function(){
+        log::info("Test in the FriendRemovePointsErrorsTests group complete");
+    });
+
+    /**
+     * Test the correct error message is returned
+     * when the points field is left empty
+     */
+    it("tests the correct error message is returned when the points field is left empty", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
+
+        // Create a variable and set it equal to the friend's id
+        $friendID = $this->friend->id;
+
+        // Make a put request to the removePoints route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->putJson("/api/$friendID/removePoints",[
+                // Leave the points field empty
+                "points" => "",
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "points" => "Points is a required field",
+            ]);
+    });
+
+    /**
+     * Test the correct error message is returned
+     * when the points field in not an integer
+     */
+    it("tests the correct error message is returned when the points field is not an integer", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
+
+        // Create a variable and set it equal to the friend's id
+        $friendID = $this->friend->id;
+
+        // Make a put request to the removePoints route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->putJson("/api/$friendID/removePoints",[
+                // Enter a string as the points field
+                "points" => "string",
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "points" => "Points must be an integer value",
+            ]);
+    });
+})->group("FriendRemovePointsErrorsTests");
