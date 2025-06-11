@@ -329,12 +329,17 @@ describe("Tests that the check the show method in the FriendController works as 
 describe("Tests that check the update method in the FriendController works as intented", function(){
     // Before each test
     beforeEach(function(){
-
+        // Create a user using the user factory
+        $this->user = User::factory()->create([
+            "password" => "password",
+        ]);
+        // Create a friend for the user
+        $this->friend = createFriend($this->user);
     });
 
     // After each test
     afterEach(function(){
-
+        log::info("Test in FriendUpdateTests group complete");
     });
 
     /**
@@ -343,52 +348,268 @@ describe("Tests that check the update method in the FriendController works as in
      * the current user
      */
     it("tests the update method works when valid data is used and the friend exists and belongs to the current user", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Create a variable for the friend id
+        $friendID = $this->friend->id;
+        // Make a put request to the update route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->putJson("/api/$friendID/update",[
+                "group" => "Group 1",
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                "success",
+            ]);
     });
 
     /**
-     * Test the update method works when increasing a friends
+     * Test the addPoints method works when increasing a friends
      * points when valid data is entered and the friend both
      * exists and belongs to the current user
      */
-    it("tests the update method works when increasing a friends points when valid data is entered and the friend exists and belongs to the current user", function(){
+    it("tests the addPoints method works when increasing a friends points when valid data is entered and the friend exists and belongs to the current user", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Set the friends id to a variable
+        $friendID = $this->friend->id;
+
+        // Make a put request to the add points route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->putJson("/api/$friendID/addPoints",[
+                "points" => 500,
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                "success",
+                "id",
+                "before",
+                "after",
+                "change",
+            ]);
     });
 
     /**
-     * Test the update method works when decreasing a friends
-     * points when valid data is entered and the friend both
-     * exists and belongs to the current user
+     * Test the addPoints method doesn't work when invalid data
+     * is entered the the friend being updated belongs to the
+     * current user
      */
-    it("tests the update method works when decreasing a friends points when valid data is used and the friend exists and belongs to the user", function(){
+    it("tests the addPoints method doesn't work when invalid data is entered and the friend being updated belongs to the current user", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Set the friends id to a variable
+        $friendID = $this->friend->id;
+
+        // Make a put request to the addPoints route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->putJson("/api/$friendID/addPoints",[
+                // Send the points as a string
+                "points" => "string",
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "points" => "Points must be an integer value",
+            ]);
     });
 
     /**
-     * Test the update method doesn't work when invalid
-     * data is entered and the friend both exists and belongs
-     * to the current user
+     * Test the addPoints method doesn't work when valid data is
+     * entered but the friend being updated doesn't belong to the
+     * user
      */
-    it("tests the update method doesn't work when invalid data is used and the friend exists and belongs to the current user", function(){
+    it("tests the addPoints method doesn't work when valid data is entered but the friend being updated doesn't belong to the user", function(){
+        // Create a second user
+        $user = User::factory()->createOne();
 
+        // Create a token for the second user
+        $token = JWTAuth::fromUser($user);
+
+        // Create a variable for the friends id
+        $friendID = $this->friend->id;
+
+        // Make a put request to the addPoints route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->putJson("/api/$friendID/addPoints",[
+                "points" => "500",
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(401)
+            ->assertJson([
+                "error" => "You are not authorised to perform this action",
+            ]);
     });
 
     /**
-     * Test the update method doesn't work when
-     * valid data is entered and the friend doesn't
-     * exist
+     * Test the addPoints method doesn't work when valid data is
+     * entered and the friend being updated doesn't exist
      */
-    it("tests the update method doesn't work when valid data is used and the friend doesn't exist", function(){
+    it("tests the addPoints method works when valid data is entered and the friend being updated doesn't exist", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Create a variable that is one greater than the friends id
+        $friendID = $this->friend->id + 1;
+
+        // Make a put request to the addPoints route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->putJson("/api/$friendID/addPoints",[
+                "points" => 500,
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(404);
     });
 
     /**
-     * Test the update method doesn't work when
-     * valid data is entered and the friend exists
-     * but doesn't belong to the current user
+     * Test the addPoints method doesn't work when there is no user
+     * logged in
      */
-    it("tests the update method doesn't work when valid data is entered and the friend exists but doesn't belong to the current user", function(){
+    it("tests the addPoints method doesn't work when there is no user logged in", function(){
+        // Set the friends id to a variable
+        $friendID = $this->friend->id;
 
+        // Make a put request to the addPoints route
+        $response = $this->putJson("/api/$friendID/addPoints",[
+            "points" => 500,
+        ]);
+
+        // Declare what the response should be
+        $response->assertStatus(401)
+            ->assertJson([
+                "error" => "Unauthorised",
+            ]);
+    });
+
+    /**
+     * Test the removePoints method works when valid data is
+     * entered and the friend both exists and belongs to the
+     * current user
+     */
+    it("tests the removePoints method works when decreasing a friends points when valid data is used and the friend exists and belongs to the user", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
+
+        // Set the friends id to a variable
+        $friendID = $this->friend->id;
+
+        // Make a put request to the remove points route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->putJson("/api/$friendID/removePoints",[
+                "points" => 10,
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                "success",
+                "id",
+                "before",
+                "after",
+                "change",
+            ]);
+    });
+
+    /**
+     * Test the removePoints method doesn't work when invalid
+     * data is entered and the friend belongs to the current user
+     */
+    it("tests the removePoints method doesn't work when invalid data is entered and the friend belongs to the current user", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
+
+        // Set the friends id to a variable
+        $friendID = $this->friend->id;
+
+        // Make a put request to the removePoints route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->putJson("/api/$friendID/removePoints",[
+                // Enter a string with as points
+                "points" => "string",
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "points" => "Points must be an integer value",
+            ]);
+    });
+
+    /**
+     * Test the removePoints method doesn't work when valid data is
+     * entered and the friend doesn't belong to the current user
+     */
+    it("tests the removePoints method doesn't work when valid data is entered and the friend doesn't belong to the current user", function(){
+        // Make a second user using the user factory
+        $user = User::factory()->createOne();
+
+        // Create a token for the user
+        $token = JWTAuth::fromUser($user);
+
+        // Set the friends id to a variable
+        $friendID = $this->friend->id;
+
+        // Make a put request to the removePoints route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->putJson("/api/$friendID/removePoints",[
+                "points" => 10,
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(401)
+            ->assertJson([
+                "error" => "You are not authorised to perform this action",
+            ]);
+    });
+
+    /**
+     * Test the removePoints method doesn't work when valid data is
+     * entered and the friend being updated doesn't exist
+     */
+    it("tests the removePoints method doesn't work when valid data is entered and the friend being updated doesn't exist", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
+
+        // Create a variable that is one greater than the friends id
+        $friendID = $this->friend->id + 1;
+
+        // Make a put request to the removePoints route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->putJson("/api/$friendID/removePoints",[
+                "points" => 10,
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(404);
+    });
+
+    /**
+     * Test the removePoints method doesn't work when there is no
+     * user logged in
+     */
+    it("tests the removePoints method doesn't work when there is no user logged in", function(){
+        // Set the friends id to a variable
+        $friendID = $this->friend->id;
+
+        // Make a put request to the removePoints route
+        $response = $this->putJson("/api/$friendID/removePoints",[
+            "points" => 10,
+        ]);
+
+        // Declare what the response should be
+        $response->assertStatus(401)
+            ->assertJson([
+                "error" => "Unauthorised",
+            ]);
     });
 })->group("FriendUpdateTests");
 
