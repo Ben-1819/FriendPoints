@@ -620,12 +620,18 @@ describe("Tests that check the update method in the FriendController works as in
 describe("Tests that check the delete method in the FriendController works as intented", function(){
     // Before each test
     beforeEach(function(){
+        // Create a user using the user factory
+        $this->user = User::factory()->create([
+            "password" => "password",
+        ]);
 
+        // Create a friend for the user using the createFriend method
+        $this->friend = createFriend($this->user);
     });
 
     // After each test
     afterEach(function(){
-
+        log::info("Test in the FriendDeleteTests group complete");
     });
 
     /**
@@ -635,7 +641,21 @@ describe("Tests that check the delete method in the FriendController works as in
      */
 
     it("tests the delete method works when the friend being deleted exists and belongs to the current user", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Create a variable using the friends id
+        $friendID = $this->friend->id;
+
+        // Make a delete request to the delete route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->deleteJson("/api/$friendID/delete");
+
+        // Declare what the response should be
+        $response->assertStatus(200)
+            ->assertJson([
+                "success" => "Friend successfully deleted",
+            ]);
     });
 
     /**
@@ -644,7 +664,24 @@ describe("Tests that check the delete method in the FriendController works as in
      * belong to the current user
      */
     it("tests the delete method doesn't work when the friend being deleted exists but doesn't belong to the current user", function(){
+        // Create a second user using the user factory
+        $user = User::factory()->createOne();
 
+        // Create a token for the second user
+        $token = JWTAuth::fromUser($user);
+
+        // Create a variable using the friends id
+        $friendID = $this->friend->id;
+
+        // Make a delete request to the delete route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->deleteJson("/api/$friendID/delete");
+
+        // Declare what the response should be
+        $response->assertStatus(401)
+            ->assertJson([
+                "error" => "You are not authorised to perform this action",
+            ]);
     });
 
     /**
@@ -652,7 +689,18 @@ describe("Tests that check the delete method in the FriendController works as in
      * the friend being deleted doesn't exist
      */
     it("tests the delete method doesn't work when the friend being deleted doesn't exist", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Create a variable that is one greater than the friends id
+        $friendID = $this->friend->id + 1;
+
+        // Make a delete request to the delete route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->deleteJson("/api/$friendID/delete");
+
+        // Declare what the response should be
+        $response->assertStatus(404);
     });
 
     /**
@@ -660,6 +708,16 @@ describe("Tests that check the delete method in the FriendController works as in
      * there is no user logged in
      */
     it("tests the delete method doesn't work when there is no user logged in", function(){
+        // Set the friends id to a variable
+        $friendID = $this->friend->id;
 
+        // Make a delete request to the delete route
+        $response = $this->deleteJson("/api/$friendID/delete");
+
+        // Declare what the response should be
+        $response->assertStatus(401)
+            ->assertJson([
+                "error" => "Unauthorised",
+            ]);
     });
 })->group("FriendDeleteTests");
