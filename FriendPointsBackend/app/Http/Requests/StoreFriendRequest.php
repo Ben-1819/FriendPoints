@@ -24,7 +24,7 @@ class StoreFriendRequest extends FormRequest
     {
         // Write the custom validation rules
         return [
-            "group" => ["required", "string"],
+            "group" => ["required", "string", "max:55"],
             "points" => ["required", "integer"],
         ];
     }
@@ -39,6 +39,7 @@ class StoreFriendRequest extends FormRequest
         $messages = [
             "group.required" => "Group is a required field",
             "group.string" => "Group must be a string value",
+            "group.max" => "Group can not exceed 55 characters",
             "points.required" => "Points is a required field",
             "points.integer" => "Points must be an integer value",
         ];

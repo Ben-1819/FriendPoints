@@ -24,7 +24,7 @@ class UpdateFriendRequest extends FormRequest
     {
         // Define the validation rules
         return [
-            "group" => ["required", "string"],
+            "group" => ["required", "string", "max:55"],
         ];
     }
 
@@ -37,6 +37,7 @@ class UpdateFriendRequest extends FormRequest
         $messages = [
             "group.required" => "Group is a required field",
             "group.string" => "Group must be a string value",
+            "group.max" => "Group can not exceed 55 characters",
         ];
 
         // Return the custom error messages
