@@ -57,7 +57,7 @@ function createFriend($user){
     $friend = Friend::factory()->createOne([
         // Set the owner id to the id of the user passed in
         "owner_id" => $user->id,
-        "group" => "both",
+        "group" => "Both",
     ]);
 
     // Return the friend
