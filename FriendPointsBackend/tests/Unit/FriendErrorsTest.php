@@ -2,6 +2,8 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
+use App\Models\User;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 uses(RefreshDatabase::class);
 
@@ -13,12 +15,20 @@ uses(RefreshDatabase::class);
 describe("tests that check the correct error message is returned when the validation rules for the group field are broken when creating a friend", function(){
     // Before each test
     beforeEach(function(){
+        // Create a user using the user factory
+        $this->user = User::factory()->create([
+            "password" => "password",
+        ]);
 
+        // Create a second user to be used as a friend
+        $this->user2 = User::factory()->create([
+            "password" => "password 2",
+        ]);
     });
 
     // After each test
     afterEach(function(){
-
+        log::info("Test in FriendStoreGroupErrorsTests complete");
     });
 
     /**
@@ -26,7 +36,25 @@ describe("tests that check the correct error message is returned when the valida
      * when the group field is left empty
      */
     it("tests the correct error message is returned when the group field is left empty", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Create a variable using the second user's id
+        $user2ID = $this->user2->id;
+
+        // Make a post request to the store route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->postJson("/api/$user2ID/store",[
+                // Leave the group field empty
+                "group" => "",
+                "points" => 500,
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "group" => "Group is a required field",
+            ]);
     });
 
     /**
@@ -34,7 +62,25 @@ describe("tests that check the correct error message is returned when the valida
      * when the group field is not a string value
      */
     it("tests the correct error message is returned when the data entered in the group field is not a string value", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Create a variable using the second user's id
+        $user2ID = $this->user2->id;
+
+        // Make a post request to the store route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->postJson("/api/$user2ID/store",[
+                // Enter an integer in the group field
+                "group" => 5,
+                "points" => 500,
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "group" => "Group must be a string value",
+            ]);
     });
 
     /**
@@ -42,7 +88,28 @@ describe("tests that check the correct error message is returned when the valida
      * when the group field exceeds 55 characters
      */
     it("tests the correct error message is returned when the group field exceeds 55 characters", function(){
+        // Use faker
+        $faker = Faker\Factory::create();
 
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
+
+        // Create a variable using the second user's id
+        $user2ID = $this->user2->id;
+
+        // Make a post request to the store route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->postJson("/api/$user2ID/store",[
+                // Enter a string longer than 55 characters as the group
+                "group" => $faker->realTextBetween(56, 60),
+                "points" => 500,
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "group" => "Group can not exceed 55 characters",
+            ]);
     });
 })->group("FriendStoreGroupErrorsTests");
 
