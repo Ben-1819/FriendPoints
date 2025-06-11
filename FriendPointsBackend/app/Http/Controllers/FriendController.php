@@ -247,7 +247,7 @@ class FriendController extends Controller
         // Return a success message as a json response
         return response()->json([
             "success" => "Friend successfully updated",
-        ], 204);
+        ], 200);
     }
 
     /**
