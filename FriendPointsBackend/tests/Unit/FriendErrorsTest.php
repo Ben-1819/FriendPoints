@@ -292,17 +292,23 @@ describe("tests that check the correct error message is returned when the valida
 /**
  * Tests that check the correct error message is
  * returned when the validation rules for the points
- * field are broken when updating a friend
+ * field are broken when increasing a friends points
  */
-describe("tests that check the correct error message is returned when the validation rules for the points field are broken when updating a friend", function(){
+describe("tests that check the correct error message is returned when the validation rules for the points field are broken when increasing a friends points", function(){
     // Before each test
     beforeEach(function(){
+        // Create a user using the user factory
+        $this->user = User::factory()->create([
+            "password" => "password",
+        ]);
 
+        // Create a friend for the user
+        $this->friend = createFriend($this->user);
     });
 
     // After each test
     afterEach(function(){
-
+        log::info("Test in the FriendAddPointsErrorsTests group complete");
     });
 
     /**
@@ -310,7 +316,24 @@ describe("tests that check the correct error message is returned when the valida
      * when the points field is left empty
      */
     it("tests the correct error message is returned when the points field is left empty", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Create a variable and set it equal to the friend's id
+        $friendID = $this->friend->id;
+
+        // Make a put request to the addPoints route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->putJson("/api/$friendID/addPoints",[
+                // Leave the points field empty
+                "points" => "",
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "points" => "Points is a required field",
+            ]);
     });
 
     /**
@@ -318,6 +341,25 @@ describe("tests that check the correct error message is returned when the valida
      * when the points field in not an integer
      */
     it("tests the correct error message is returned when the points field is not an integer", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Create a variable and set it equal to the friends id
+        $friendID = $this->friend->id;
+
+        // Make a put request to the addPoints route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->putJson("/api/$friendID/addPoints",[
+                // Enter a string in the points field
+                "points" => "points",
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "points" => "Points must be an integer value",
+            ]);
     });
-})->group("FriendUpdatePointsErrorsTests");
+})->group("FriendAddPointsErrorsTests");
+
+
