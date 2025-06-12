@@ -32,4 +32,11 @@ class Friend extends Model
     public function owner(){
         return $this->belongsTo(User::class(), "owner_id", "id");
     }
+
+    /**
+     * Define the relationship between Friend and History
+     */
+    public function history(){
+        return $this->hasMany(History::class());
+    }
 }
