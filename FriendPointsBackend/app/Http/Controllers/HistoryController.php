@@ -49,4 +49,39 @@ class HistoryController extends Controller
             "records" => $records
         ], 200);
     }
+
+    /**
+     * Store method - Used to store a new record in the Friend
+     * table
+     */
+    public function store(StoreHistoryRequest $request){
+        log::info("The store method in the history controller is running.");
+
+        // Validate the users input
+        $request->validated();
+        log::info("Users input successfully validated");
+
+        // Create a new record in the History table
+        $history = new History([
+            "friend_id" => $request["id"],
+            "title" => $request["title"],
+            "reason" => $request["reason"],
+            "before" => $request["before"],
+            "after" => $request["after"],
+            "change" => $request["change"],
+        ]);
+        $history->save();
+
+        log::info("Historical record added");
+        log::info("Friend: {friend_id}", ["friend_id" => $request["id"]]);
+        log::info("Title of change: {title}", ["title" => $request["title"]]);
+        log::info("Reason for change: {reason}", ["reason" => $request["reason"]]);
+        log::info("Points before: {before}", ["before" => $request["before"]]);
+        log::info("Points after: {after}", ["after" => $request["after"]]);
+
+        // Return a json response saying the history was successfully created
+        return response()->json([
+            "success" => "Historical record successfully created",
+        ], 201);
+    }
 }
