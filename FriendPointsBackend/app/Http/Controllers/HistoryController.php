@@ -84,4 +84,21 @@ class HistoryController extends Controller
             "success" => "Historical record successfully created",
         ], 201);
     }
+
+    /**
+     * Show method - Shows a selected historical record
+     */
+    public function show($id){
+        log::info("The show method in the HistoryController is running");
+
+        // Find the record the user is requesting
+        log::info("Finding the historical record that the user is requesting");
+        $history = History::find($id);
+
+        log::info("Historical record has been found");
+        // Return the found historical record in a json response
+        return response()->json([
+            "history" => $history,
+        ], 200);
+    }
 }
