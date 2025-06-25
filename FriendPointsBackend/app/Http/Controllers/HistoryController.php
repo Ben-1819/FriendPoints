@@ -101,4 +101,43 @@ class HistoryController extends Controller
             "history" => $history,
         ], 200);
     }
+
+    /**
+     * Update method - Updates a selected record
+     */
+    public function update(UpdateHistoryRequest $request, $id){
+        log::info("Update method in the HistoryController is running");
+
+        // Validate the users input,
+        $request->validated();
+        log::info("Users input validated");
+
+        // Get the current history record matching the id
+        $oldData = History::find($id);
+        log::info("Current record retrieved");
+
+        // Update the record in the History table
+        $updateHistory = History::where("id", $id)->update([
+            "friend_id" => $oldData->friend_id,
+            "title" => $request["title"],
+            "reason" => $request["reason"],
+            "before" => $oldData->before,
+            "after" => $oldData->after,
+            "change" => $oldData->change,
+        ]);
+        log::info("Record updated successfully");
+
+        // Set the updated history to the updatedHistory variable
+        $updatedHistory = History::find($id);
+        log::info("Updated record set to the updatedHistory variable");
+        log::info("Old title: {title}", ["title" => $oldData->title]);
+        log::info("New title: {title}", ["title" => $updatedHistory->title]);
+        log::info("Old reason: {reason}", ["reason" => $oldData->reason]);
+        log::info("New reason: {reason}", ["reason" => $updatedHistory->reason]);
+
+        // Return a success message with a json response
+        return response()->json([
+            "success" => "History updated successfully",
+        ], 200);
+    }
 }
