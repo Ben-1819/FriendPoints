@@ -1,6 +1,6 @@
 <?php
 use App\Models\Friend;
-
+use App\Models\History;
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -62,4 +62,23 @@ function createFriend($user){
 
     // Return the friend
     return $friend;
+}
+
+/**
+ * CreateHistory function - Uses the HistoryFactory to create a history
+ */
+function createHistory($friend){
+    // use the history factory to create a history
+    $history = History::factory()->createOne([
+        // Set the friend id to the id of the friend passed in
+        "friend_id" => $friend->id,
+        "title" => "Test",
+        "reason" => "Test",
+        "before" => 50,
+        "after" => 25,
+        "change" => 25,
+    ]);
+
+    // Return the created history
+    return $history;
 }
