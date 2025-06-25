@@ -140,4 +140,20 @@ class HistoryController extends Controller
             "success" => "History updated successfully",
         ], 200);
     }
+
+    /**
+     * Destroy method - Deletes a record from the History table
+     */
+    public function destroy($id){
+        log::info("Destroy method in HistoryController running");
+
+        // Find the record that the user wants to destroy and delete it
+        History::where("id", $id)->delete();
+        log::info("Record successfully deleted");
+
+        // Return a json response containing a success message
+        return response()->json([
+            "success" => "Record successfully deleted"
+        ], 200);
+    }
 }
