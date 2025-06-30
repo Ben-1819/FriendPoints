@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class History extends Model
 {
+
+    /** @use HasFactory<\Database\Factories\FriendFactory> */
+    use HasFactory;
+
     protected $fillable = [
         "friend_id",
         "title",

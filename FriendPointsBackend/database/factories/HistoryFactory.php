@@ -21,9 +21,9 @@ class HistoryFactory extends Factory
             "friend_id" => Friend::factory(),
             "title" => $this->faker->words(1, true),
             "reason" => $this->faker->words(10, true),
-            "before" => $this->faker->number(),
-            "after" => $this->faker->number(),
-            "change" => $this->faker->number(),
+            "before" => $this->faker->numberBetween(500, 1000),
+            "after" => $this->faker->numberBetween(500, 1000),
+            "change" => $this->faker->numberBetween(500, 1000),
         ];
     }
 }
