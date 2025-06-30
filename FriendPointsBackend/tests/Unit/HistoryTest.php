@@ -61,44 +61,67 @@ describe("Tests to check the index method in the HistoryController works as inte
 })->group("HistoryIndexTests");
 
 /**
- * Tests to check the byFriend method in the
+ * Tests to check the friendIndex method in the
  * HistoryController works as intented
  */
-describe("Tests to check the byFriend method in the HistoryController works as intented", function(){
+describe("Tests to check the friendIndex method in the HistoryController works as intented", function(){
     // Before each test
     beforeEach(function(){
+        // Create a user using the user factory
+        $this->user = User::factory()->createOne();
 
+        // Create a friend for the user
+        $this->friend = createFriend($this->user);
+
+        // Create a history record for the friend
+        $this->history = createHistory($this->friend);
     });
 
     // After each test
     afterEach(function(){
-
+        log::info("Test in the HistoryFriendIndexTests group completed");
     });
 
     /**
-     * Test the byFriend method works when there
+     * Test the friendIndex method works when there
      * is a user logged in and the friend exists
      */
-    it("tests the byFriend method works when there is a user logged in and the friend exists", function(){
+    it("tests the friendIndex method works when there is a user logged in and the friend exists", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Set the friend's ID to a variable
+        $friendID = $this->friend->id;
+
+        // Make a get request to the friendIndex route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->getJson("/api/history/$friendID/FriendIndex");
+
+        // Declare what the response should be
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                "records",
+            ]);
     });
 
     /**
-     * Test the byFriend method doesn't work when there
+     * Test the friendIndex method doesn't work when there
      * is no user logged in and the friend exists
      */
-    it("tests the byFriend method doesn't work when there is no user logged in and the friend exists", function(){
+    it("tests the friendIndex method doesn't work when there is no user logged in and the friend exists", function(){
+        // Set a variable for the friend's id
+        $friendID = $this->friend->id;
 
+        // Make a get request to the friendIndex route
+        $response = $this->getJson("/api/history/$friendID/FriendIndex");
+
+        // Declare what the response should be
+        $response->assertStatus(401)
+            ->assertJson([
+                "error" => "Unauthorised",
+            ]);
     });
-
-    /**
-     * Test the byFriend method doesn't work when there
-     * is a user logged in and the friend doesn't exist
-     */
-    it("tests the byFriend method doesn't work when there is a user logged in and the friend doesn't exist", function(){
-
-    });
-})->group("HistoryByFriendTests");
+})->group("HistoryFriendIndexTests");
 
 /**
  * Tests to check the store method in the
