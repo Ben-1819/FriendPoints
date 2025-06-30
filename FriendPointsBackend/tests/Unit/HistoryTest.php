@@ -2,6 +2,8 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
+use App\Models\User;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 uses(RefreshDatabase::class);
 
@@ -12,12 +14,15 @@ uses(RefreshDatabase::class);
 describe("Tests to check the index method in the HistoryController works as intented", function(){
     // Before each test
     beforeEach(function(){
-
+        // Create a user using the user factory
+        $this->user = User::factory()->createOne();
+        $this->friend = createFriend($this->user);
+        $this->history = createHistory($this->friend);
     });
 
     // After each test
     afterEach(function(){
-
+        log::info("Test in the HistoryIndexTests group complete.");
     });
 
     /**
@@ -25,7 +30,18 @@ describe("Tests to check the index method in the HistoryController works as inte
      * is a user logged in
      */
     it("tests the index method works when there is a user logged in", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Make a get request to the history index route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->getJson("/api/history/records");
+
+        // Declare what the response should be
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                "records",
+            ]);
     });
 
     /**
@@ -33,7 +49,14 @@ describe("Tests to check the index method in the HistoryController works as inte
      * there is no user logged in
      */
     it("tests the index method doesn't work when there is no user logged in", function(){
+        // Make a get request to the history index route
+        $response = $this->getJson("/api/history/records");
 
+        // Declare what the response should be
+        $response->assertStatus(401)
+            ->assertJson([
+                "error" => "Unauthorised"
+            ]);
     });
 })->group("HistoryIndexTests");
 
