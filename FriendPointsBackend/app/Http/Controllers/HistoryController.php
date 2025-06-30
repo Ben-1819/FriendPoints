@@ -18,7 +18,7 @@ class HistoryController extends Controller
         log::info("Index method in HistoryController running");
 
         // Query the database to retrieve all records by most recent
-        $records = History::all()->latest();
+        $records = History::all();
 
         log::info("All records retrieved");
 

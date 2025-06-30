@@ -34,7 +34,7 @@ Route::controller(FriendController::class)->middleware(["jwt", "friendOwner"])->
 });
 
 Route::controller(HistoryController::class)->middleware("jwt")->group(function(){
-    Route::get("/history/index", "index");
+    Route::get("/history/records", "index");
     Route::get("/history/{id}/FriendIndex", "friendIndex");
     Route::get("/history/{id}/show", "show");
 });
