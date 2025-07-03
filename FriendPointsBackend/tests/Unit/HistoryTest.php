@@ -127,15 +127,19 @@ describe("Tests to check the friendIndex method in the HistoryController works a
  * Tests to check the store method in the
  * HistoryController works as intented
  */
-describe("Tests to check the show method in the HistoryController works as intented", function(){
+describe("Tests to check the store method in the HistoryController works as intented", function(){
     // Before each test
     beforeEach(function(){
+        // Create a user using the user factory
+        $this->user = User::factory()->createOne();
 
+        // Create a friend using the createFriend method
+        $this->friend = createFriend($this->user);
     });
 
     // After each test
     afterEach(function(){
-
+        log::info("Test in the HistoryStoreTests group complete");
     });
 
     /**
@@ -145,7 +149,28 @@ describe("Tests to check the show method in the HistoryController works as inten
      * to the logged in user
      */
     it("tests the store method works when valid data is used, there is a user logged in and the friend the record belongs to belongs to the logged in user", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Create a variable and set it to the friends id
+        $friendID = $this->friend->id;
+
+        // Make a post request to the store history route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->postJson("/api/history/$friendID/store",[
+                "id" => $friendID,
+                "title" => "Test",
+                "reason" => "Test",
+                "before" => 20,
+                "after" => 30,
+                "change" => 10,
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(201)
+            ->assertJson([
+                "success" => "Historical record successfully created",
+            ]);
     });
 
     /**
@@ -155,7 +180,29 @@ describe("Tests to check the show method in the HistoryController works as inten
      * to the logged in user
      */
     it("tests the store method doesn't work when invalid data is used, there is a logged in user and the friend the history record is for belongs to the logged in user", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Create a variable and set it to the friends id
+        $friendID = $this->friend->id;
+
+        // Make a post request to the store history route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->postJson("/api/history/$friendID/store",[
+                "id" => $friendID,
+                // Leave the title field null
+                "title" => "",
+                "reason" => "Test",
+                "before" => 20,
+                "after" => 30,
+                "change" => 10,
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "title" => "Title is a required field",
+            ]);
     });
 
     /**
@@ -163,7 +210,24 @@ describe("Tests to check the show method in the HistoryController works as inten
      * is used and there is no user logged in
      */
     it("tests the store method doesn't work when valid data is used and there is no user logged in", function(){
+        // Create a variable and set it to the friend's id
+        $friendID = $this->friend->id;
 
+        // Make a post request to the store route
+        $response = $this->postJson("/api/history/$friendID/store",[
+            "id" => $friendID,
+            "title" => "Test",
+            "reason" => "Test",
+            "before" => 20,
+            "after" => 30,
+            "change" => 10,
+        ]);
+
+        // Declare what the response should be
+        $response->assertStatus(401)
+            ->assertJson([
+                "error" => "Unauthorised",
+            ]);
     });
 
     /**
@@ -172,7 +236,28 @@ describe("Tests to check the show method in the HistoryController works as inten
      * record is for a friend that doesn't exist
      */
     it("tests the store method doesn't work when valid data is used and there is a logged in user but the history record is for a friend that doesn't exist", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Create a variable and set it to a number that is not the friend's id
+        $friendID = 500;
+
+        // Make a post request to the store route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->postJson("/api/history/$friendID/store",[
+                "id" => $friendID,
+                "title" => "Test",
+                "reason" => "Test",
+                "before" => 20,
+                "after" => 30,
+                "change" => 10,
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(404)
+            ->assertJson([
+                "error" => "Friend not found",
+            ]);
     });
 
     /**
@@ -181,7 +266,31 @@ describe("Tests to check the show method in the HistoryController works as inten
      * history record is for doesn't belong to them
      */
     it("tests the store method doesn't work when valid data is used and there is a user logged in but the friend that the history record is for doesn't belong to the logged in user", function(){
+        // Create a second user using the user factory
+        $user2 = User::factory()->createOne();
 
+        // Create a token for the second user
+        $token = JWTAuth::fromUser($user2);
+
+        // Create a variable and set it to the friend's id
+        $friendID = $this->friend->id;
+
+        // Make a post request to the store route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->postJson("/api/history/$friendID/store",[
+                "id" => $friendID,
+                "title" => "Test",
+                "reason" => "Test",
+                "before" => 20,
+                "after" => 30,
+                "change" => 10,
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(401)
+            ->assertJson([
+                "error" => "You are not authorised to perform this action",
+            ]);
     });
 })->group("HistoryStoreTests");
 
