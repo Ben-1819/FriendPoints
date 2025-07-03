@@ -301,12 +301,19 @@ describe("Tests to check the store method in the HistoryController works as inte
 describe("Tests to check the show method in the HistoryController works as intented", function(){
     // Before each test
     beforeEach(function(){
+        // Create a user using the user factory
+        $this->user = User::factory()->createOne();
 
+        // Create a friend for the user
+        $this->friend = createFriend($this->user);
+
+        // Create a historical record for the user
+        $this->history = createHistory($this->friend);
     });
 
     // After each test
     afterEach(function(){
-
+        log::info("Test in the HistoryShowTests group complete");
     });
 
     /**
@@ -315,15 +322,21 @@ describe("Tests to check the show method in the HistoryController works as inten
      * exists
      */
     it("tests that the show method works when there is a user logged in and the record being shown exists", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
-    });
+        // Create a variable and set it to the historical records id
+        $historyID = $this->history->id;
 
-    /**
-     * Test the show method doesn't work when there is
-     * a user logged in and record being shown doesn't exist
-     */
-    it("tests the show method doesn't work when there is a user logged in and the record being shown doesn't exist", function(){
+        // Make a get request to the history show route
+        $response  = $this->withHeader("Authorization", "Bearer $token")
+            ->getJson("/api/history/$historyID/show");
 
+        // Declare what the response should be
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                "history",
+            ]);
     });
 
     /**
@@ -331,7 +344,17 @@ describe("Tests to check the show method in the HistoryController works as inten
      * no user logged in
      */
     it("tests the show method doesn't work when there is no user logged in", function(){
+        // Create a variable and set it to the historical records id
+        $historyID = $this->history->id;
 
+        // Make a get request to the history show route
+        $response  = $this->getJson("/api/history/$historyID/show");
+
+        // Declare what the response should be
+        $response->assertStatus(401)
+            ->assertJson([
+                "error" => "Unauthorised",
+            ]);
     });
 })->group("HistoryShowTests");
 
