@@ -37,10 +37,10 @@ Route::controller(HistoryController::class)->middleware("jwt")->group(function()
     Route::get("/history/records", "index");
     Route::get("/history/{id}/FriendIndex", "friendIndex");
     Route::get("/history/{id}/show", "show");
+    Route::post("/history/{id}/store", "store")->middleware("friendOwner");
 });
 
 Route::controller(HistoryController::class)->middleware(["jwt", "historyOwner"])->group(function(){
-    Route::post("/history/store", "store");
     Route::put("/history/{id}/update", "update");
     Route::delete("/history/{id}/delete", "destroy");
 });
