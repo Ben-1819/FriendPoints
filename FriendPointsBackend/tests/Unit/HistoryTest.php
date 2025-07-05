@@ -365,12 +365,19 @@ describe("Tests to check the show method in the HistoryController works as inten
 describe("Tests to check the update method in the HistoryController works as intented", function(){
     // Before each test
     beforeEach(function(){
+        // Create a user using the history factory
+        $this->user = User::factory()->createOne();
 
+        // Create a friend for the user
+        $this->friend = createFriend($this->user);
+
+        // Create a historical record to be updated
+        $this->history = createHistory($this->friend);
     });
 
     // After each test
     afterEach(function(){
-
+        log::info("Test in the HistoryUpdateTests group complete.");
     });
 
     /**
@@ -380,7 +387,24 @@ describe("Tests to check the update method in the HistoryController works as int
      * logged in user and the record being updated exists
      */
     it("tests the update method works when valid data is used, there is a user logged in, the friend that the history record is for belongs to the current user and the record being updated exists", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Create a variable and set it to the historical records id
+        $historyID = $this->history->id;
+
+        // Make a put request to the update route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->putJson("/api/history/$historyID/update",[
+                "title" => "Updated",
+                "reason" => "Updated",
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                "success",
+            ]);
     });
 
     /**
@@ -391,7 +415,29 @@ describe("Tests to check the update method in the HistoryController works as int
      * exists
      */
     it("tests the update method doesn't work when invalid data is used, there is a user logged in, the friend the history record is for belongs to the current user and the record being updated exists", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Create a variable and set it to the historical records id
+        $historyID = $this->history->id;
+
+        // Make a put request to the update route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->putJson("/api/history/$historyID/update",[
+                "id" => $this->friend->id,
+                // Leave the title field empty
+                "title" => "",
+                "reason" => "Updated",
+                "before" => 20,
+                "after" => 30,
+                "change" => 10,
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "title" => "Title is a required field",
+            ]);
     });
 
     /**
@@ -402,7 +448,31 @@ describe("Tests to check the update method in the HistoryController works as int
      * updated exists
      */
     it("tests the update method doesn't work when valid data is used, there is a user logged in, the friend the history record is for doesn't belong to the logged in user and the record being updated exists", function(){
+        // Create a second user using the user factory
+        $user2 = User::factory()->createOne();
 
+        // Create a token for the second user
+        $token = JWTAuth::fromUser($user2);
+
+        // Create a variable and set it to the historical records id
+        $historyID = $this->history->id;
+
+        // Make a put request to the update history route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->putJson("/api/history/$historyID/update",[
+                "id" => $this->friend->id,
+                "title" => "Update",
+                "reason" => "Update",
+                "before" => 20,
+                "after" => 30,
+                "change" => 10,
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(403)
+            ->assertJson([
+                "error" => "You are not authorised to perform this action",
+            ]);
     });
 
     /**
@@ -413,7 +483,29 @@ describe("Tests to check the update method in the HistoryController works as int
      * updated doesn't exist
      */
     it("tests the update method doesn't work when valid data is used, there is a user logged in, the friend the history record is for belongs to the logged in user and the record being updated doesn't exist", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Create a variable and set it to the historical records id
+        $historyID = $this->history->id;
+
+        // Make a put request to the update history route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+        // In the route parameters enter a number that doesn't match any history records as the id parameter
+            ->putJson("/api/history/500/update",[
+                "id" => $this->friend->id,
+                "title" => "Update",
+                "reason" => "Update",
+                "before" => 20,
+                "after" => 30,
+                "change" => 10,
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(404)
+            ->assertJson([
+                "error" => "History not found",
+            ]);
     });
 
     /**
@@ -422,7 +514,24 @@ describe("Tests to check the update method in the HistoryController works as int
      * logged in
      */
     it("tests the update method doesn't work when valid data is used and there is no user logged in", function(){
+        // Create a variable and set it to the historical records id
+        $historyID = $this->history->id;
 
+        // Make a put request to the update history route
+        $response = $this->putJson("/api/$historyID/update",[
+            "id" => $this->friend->id,
+            "title" => "Update",
+            "reason" => "Update",
+            "before" => 20,
+            "after" => 30,
+            "change" => 10,
+        ]);
+
+        // Declare what the response should be
+        $response->assertStatus(401)
+            ->assertJson([
+                "error" => "Token not found or malformed",
+            ]);
     });
 })->group("HistoryUpdateTests");
 
