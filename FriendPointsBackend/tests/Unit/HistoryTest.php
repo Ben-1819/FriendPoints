@@ -542,12 +542,19 @@ describe("Tests to check the update method in the HistoryController works as int
 describe("Tests to check that the delete method in the HistoryController works as intented", function(){
     // Before each test
     beforeEach(function(){
+        // Create a user using the user factory
+        $this->user = User::factory()->createOne();
 
+        // Create a friend belonging to the user
+        $this->friend = createFriend($this->user);
+
+        // Create a history belonging to the friend
+        $this->history = createHistory($this->friend);
     });
 
     // After each test
     afterEach(function(){
-
+        log::info("Test in the HistoryDeleteTests group complete");
     });
 
     /**
@@ -557,7 +564,21 @@ describe("Tests to check that the delete method in the HistoryController works a
      * being deleted exists
      */
     it("tests the delete method works when there is a user logged in, the friend the history record is for belongs to the logged in user and the record being deleted exists", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Create a variable and set it to the history id
+        $historyID = $this->history->id;
+
+        // Make a delete request to the delete route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->deleteJson("/api/history/$historyID/delete");
+
+        // Declare what the response should be
+        $response->assertStatus(200)
+            ->assertJson([
+                "success" => "Record successfully deleted",
+            ]);
     });
 
     /**
@@ -567,7 +588,19 @@ describe("Tests to check that the delete method in the HistoryController works a
      * being deleted does not exist
      */
     it("tests the delete method doesn't work when there is a user logged in, the friend the history record is for belongs to the logged in user and the record being deleted doesn't exist", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Make a delete request to the delete route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            // Set the id route parameter to a history record that doesnt exist
+            ->deleteJson("/api/history/500/delete");
+
+        // Declare what the response should be
+        $response->assertStatus(404)
+            ->assertJson([
+                "error" => "History not found",
+            ]);
     });
 
     /**
@@ -577,7 +610,24 @@ describe("Tests to check that the delete method in the HistoryController works a
      * the record being deleted exists
      */
     it("tests the delete method doesn't work when there is a user logged in, the friend the history record is for doesn't belong to the logged in user and the record being deleted exists", function(){
+        // Make a second user
+        $user2 = User::factory()->createOne();
 
+        // Create a token for the second user
+        $token = JWTAuth::fromUser($user2);
+
+        // Create a variable and set it to the history id
+        $historyID = $this->history->id;
+
+        // Make a delete request to the delete route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->deleteJson("/api/history/$historyID/delete");
+
+        // Declare what the response should be
+        $response->assertStatus(403)
+            ->assertJson([
+                "error" => "You are not authorised to perform this action",
+            ]);
     });
 
     /**
@@ -585,6 +635,16 @@ describe("Tests to check that the delete method in the HistoryController works a
      * is no user logged in
      */
     it("tests the delete method doesn't work when there is no user logged in", function(){
+        // Create a variable and set it to the history id
+        $historyID = $this->history->id;
 
+        // Make a delete request to the delete route
+        $response = $this->deleteJson("/api/history/$historyID/delete");
+
+        // Declare what the response should be
+        $response->assertStatus(401)
+            ->assertJson([
+                "error" => "Token not found or malformed",
+            ]);
     });
 })->group("HistoryDeleteTests");
