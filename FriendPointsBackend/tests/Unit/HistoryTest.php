@@ -55,7 +55,7 @@ describe("Tests to check the index method in the HistoryController works as inte
         // Declare what the response should be
         $response->assertStatus(401)
             ->assertJson([
-                "error" => "Unauthorised"
+                "error" => "Token not found or malformed"
             ]);
     });
 })->group("HistoryIndexTests");
@@ -118,7 +118,7 @@ describe("Tests to check the friendIndex method in the HistoryController works a
         // Declare what the response should be
         $response->assertStatus(401)
             ->assertJson([
-                "error" => "Unauthorised",
+                "error" => "Token not found or malformed",
             ]);
     });
 })->group("HistoryFriendIndexTests");
@@ -226,7 +226,7 @@ describe("Tests to check the store method in the HistoryController works as inte
         // Declare what the response should be
         $response->assertStatus(401)
             ->assertJson([
-                "error" => "Unauthorised",
+                "error" => "Token not found or malformed",
             ]);
     });
 
@@ -287,7 +287,7 @@ describe("Tests to check the store method in the HistoryController works as inte
             ]);
 
         // Declare what the response should be
-        $response->assertStatus(401)
+        $response->assertStatus(403)
             ->assertJson([
                 "error" => "You are not authorised to perform this action",
             ]);
@@ -353,7 +353,7 @@ describe("Tests to check the show method in the HistoryController works as inten
         // Declare what the response should be
         $response->assertStatus(401)
             ->assertJson([
-                "error" => "Unauthorised",
+                "error" => "Token not found or malformed",
             ]);
     });
 })->group("HistoryShowTests");
