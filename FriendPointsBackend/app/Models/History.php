@@ -24,6 +24,6 @@ class History extends Model
      * Define the relationship between Friend and History
      */
     public function friend(){
-        return $this->belongsTo(Friend::class());
+        return $this->belongsTo(Friend::class);
     }
 }
