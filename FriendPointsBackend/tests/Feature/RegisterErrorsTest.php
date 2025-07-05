@@ -294,7 +294,7 @@ describe("Tests to check that the error messages are correct when the validation
 
     // After each test
     afterEach(function(){
-
+        log::info("Test in the RegisterPasswordErrorTests group complete");
     });
 
     /**
@@ -302,7 +302,20 @@ describe("Tests to check that the error messages are correct when the validation
      * when the password field is left empty
      */
     it("tests that the correct error message is returned when the password field is left empty", function(){
+        // Make a post request to the register route
+        $response = $this->postJson("/api/register",[
+            "first_name" => "Test",
+            "last_name" => "Test",
+            "email" => "test@example.com",
+            // Leave the password field empty
+            "password" => "",
+        ]);
 
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "password" => "Password is a required field",
+            ]);
     });
 
     /**
@@ -310,7 +323,20 @@ describe("Tests to check that the error messages are correct when the validation
      * when the password field is not a string
      */
     it("tests that the correct error message is returned when the password field is not a string", function(){
+        // Make a post request to the register route
+        $response = $this->postJson("/api/register",[
+            "first_name" => "Test",
+            "last_name" => "Test",
+            "email" => "test@example.com",
+            // Enter a number in the password field
+            "password" => 1234567,
+        ]);
 
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "password" => "Password must be of the data type string"
+            ]);
     });
 
     /**
@@ -318,6 +344,19 @@ describe("Tests to check that the error messages are correct when the validation
      * when the password field is less than 6 characters
      */
     it("tests that the correct error message is returned when the password field is less than 6 characters", function(){
+        // Make a post request to the register route
+        $response = $this->postJson("/api/register",[
+            "first_name" => "Test",
+            "last_name" => "Test",
+            "email" => "test@example.com",
+            // Enter a password less than 6 characters
+            "password" => "short",
+        ]);
 
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "password" => "Password must be at least 6 characters long",
+            ]);
     });
 })->group("RegisterPasswordErrorTests");
