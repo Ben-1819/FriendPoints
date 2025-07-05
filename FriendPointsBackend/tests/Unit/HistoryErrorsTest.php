@@ -134,12 +134,16 @@ describe("Tests the correct error messages are returned when the validation rule
 describe("Tests the correct error messages are returned when the validation rules for the reason field are broken when storing a record", function(){
     // Before each test
     beforeEach(function(){
+        // Create a user using the user factory
+        $this->user = User::factory()->createOne();
 
+        // Create a friend for the user
+        $this->friend = createFriend($this->user);
     });
 
     // After each test
     afterEach(function(){
-
+        log::info("Test in the HistoryReasonStoreErrorsTests group complete");
     });
 
     /**
@@ -148,7 +152,29 @@ describe("Tests the correct error messages are returned when the validation rule
      * storing a record
      */
     it("tests the correct error message is returned when the reason field is left empty when storing a record", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Create a variable and set it to the friend's id
+        $friendID = $this->friend->id;
+
+        // Make a post request to the store history route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->postJson("/api/history/$friendID/store",[
+                "id" => $friendID,
+                "title" => "Test",
+                // Leave the reason field empty
+                "reason" => "",
+                "before" => 20,
+                "after" => 30,
+                "change" => 10,
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "reason" => "Reason is a required field",
+            ]);
     });
 
     /**
@@ -157,7 +183,29 @@ describe("Tests the correct error messages are returned when the validation rule
      * storing a record
      */
     it("tests the correct error message is returned when the reason field is not a string when storing a record", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Create a variable and set it to the friend's id
+        $friendID = $this->friend->id;
+
+        // Make a post request to the store history route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->postJson("/api/history/$friendID/store",[
+                "id" => $friendID,
+                "title" => "Test",
+                // Put an integer in the reason field
+                "reason" => 1,
+                "before" => 20,
+                "after" => 30,
+                "change" => 10,
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "reason" => "Reason must be a string value",
+            ]);
     });
 
     /**
@@ -166,7 +214,29 @@ describe("Tests the correct error messages are returned when the validation rule
      * characters when storing a record
      */
     it("tests the correct error message is returned when the reason field is longer than 255 characters when storing a record", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Create a variable and set it to the friend's id
+        $friendID = $this->friend->id;
+
+        // Make a post request to the store history route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->postJson("/api/history/$friendID/store",[
+                "id" => $friendID,
+                "title" => "Test",
+                // Make the reason field longer than 255 characters
+                "reason" => fake()->realTextBetween(256, 260),
+                "before" => 20,
+                "after" => 30,
+                "change" => 10,
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "reason" => "Reason can't be longer than 255 characters",
+            ]);
     });
 })->group("HistoryReasonStoreErrorsTests");
 
