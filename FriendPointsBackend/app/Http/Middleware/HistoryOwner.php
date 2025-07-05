@@ -25,7 +25,7 @@ class HistoryOwner
 
         log::info("Records id is {historyId}, getting the matching record from the histories table", ["historyId" => $historyId]);
         // Find the matching record in the histories table
-        $history = Friend::find($historyId);
+        $history = History::with('friend')->find($historyId);
 
         log::info("Checking if the history exists");
         // Use if statement to check if the history exists
@@ -41,7 +41,7 @@ class HistoryOwner
         log::info("Checking if the current user is the owner of the friend the history is about");
         // Use if statement to check if the current user is the owner of the friend
         if(Auth::user()->id === $history->friend->owner_id){
-            log::info("The current user is the owner of the friend");
+            log::info("The current user is the owner of the history");
             // Allow the user to continue
             return $next($request);
         }else{
@@ -49,7 +49,7 @@ class HistoryOwner
             // Return a message telling the user they are not authorised to perform this action
             return response()->json([
                 "error" => "You are not authorised to perform this action",
-            ], 401);
+            ], 403);
         }
     }
 }
