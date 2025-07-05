@@ -59,7 +59,7 @@ describe("Tests to check that the index method in the FriendController works as 
         // Declare what the response should be
         $response->assertStatus(401)
             ->assertJson([
-                "error" => "Unauthorised"
+                "error" => "Token not found or malformed"
             ]);
     });
 })->group("FriendIndexTests");
@@ -115,7 +115,7 @@ describe("Tests to check that the group1Index method in FriendController works a
         // Declare what the response should be
         $response->assertStatus(401)
             ->assertJson([
-                "error" => "Unauthorised",
+                "error" => "Token not found or malformed",
             ]);
     });
 })->group("FriendGroup1IndexTests");
@@ -173,7 +173,7 @@ describe("Tests to check that the group2Index method in FriendController works a
         // Declare what the response should be
         $response->assertStatus(401)
             ->assertJson([
-                "error" => "Unauthorised",
+                "error" => "Token not found or malformed",
             ]);
     });
 })->group("FriendGroup2IndexTests");
@@ -262,7 +262,7 @@ describe("Tests that check the store method in the FriendController works as int
         // Declare what the response should be
         $response->assertStatus(401)
             ->assertJson([
-                "error" => "Unauthorised",
+                "error" => "Token not found or malformed",
             ]);
     });
 })->group("FriendStoreTests");
@@ -317,7 +317,7 @@ describe("Tests that the check the show method in the FriendController works as 
         // Declare what the response should be
         $response->assertStatus(401)
             ->assertJson([
-                "error" => "Unauthorised",
+                "error" => "Token not found or malformed",
             ]);
     });
 })->group("FriendShowTests");
@@ -486,7 +486,7 @@ describe("Tests that check the update method in the FriendController works as in
         // Declare what the response should be
         $response->assertStatus(401)
             ->assertJson([
-                "error" => "Unauthorised",
+                "error" => "Token not found or malformed",
             ]);
     });
 
@@ -608,7 +608,7 @@ describe("Tests that check the update method in the FriendController works as in
         // Declare what the response should be
         $response->assertStatus(401)
             ->assertJson([
-                "error" => "Unauthorised",
+                "error" => "Token not found or malformed",
             ]);
     });
 })->group("FriendUpdateTests");
@@ -717,7 +717,7 @@ describe("Tests that check the delete method in the FriendController works as in
         // Declare what the response should be
         $response->assertStatus(401)
             ->assertJson([
-                "error" => "Unauthorised",
+                "error" => "Token not found or malformed",
             ]);
     });
 })->group("FriendDeleteTests");

@@ -287,7 +287,7 @@ describe("Tests to check the store method in the HistoryController works as inte
             ]);
 
         // Declare what the response should be
-        $response->assertStatus(403)
+        $response->assertStatus(401)
             ->assertJson([
                 "error" => "You are not authorised to perform this action",
             ]);
