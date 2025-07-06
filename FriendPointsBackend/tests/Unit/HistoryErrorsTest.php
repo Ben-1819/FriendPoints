@@ -248,12 +248,19 @@ describe("Tests the correct error messages are returned when the validation rule
 describe("Tests the correct error messages are returned when the validation rules for the title field are broken when updating a record", function(){
     // Before each test
     beforeEach(function(){
+        // Create a user using the user factory
+        $this->user = User::factory()->createOne();
 
+        // Create a friend that belongs to the user
+        $this->friend = createFriend($this->user);
+
+        // Create a history belonging to the friend
+        $this->history = createHistory($this->friend);
     });
 
     // After each test
     afterEach(function(){
-
+        log::info("Test in HistoryTitleUpdateErrorsTests group complete");
     });
 
     /**
@@ -262,7 +269,25 @@ describe("Tests the correct error messages are returned when the validation rule
      * a record
      */
     it("tests the correct error message is returned when the title field is left empty when updating a record", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Create a variable and set it to the history's id
+        $historyID = $this->history->id;
+
+        // Make a put request to the update history route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->putJson("/api/history/$historyID/update",[
+                // Leave the title field empty
+                "title" => "",
+                "reason" => "Updated",
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "title" => "Title is a required field",
+            ]);
     });
 
     /**
@@ -271,7 +296,25 @@ describe("Tests the correct error messages are returned when the validation rule
      * updating a record
      */
     it("tests the correct error message is returned when the title field is not a string when updating a record", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Create a variable and set it to the history's id
+        $historyID = $this->history->id;
+
+        // Make a put request to the update history route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->putJson("/api/history/$historyID/update",[
+                // Enter an integer in the title field
+                "title" => 1,
+                "reason" => "Updated",
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "title" => "Title must be a string value",
+            ]);
     });
 
     /**
@@ -280,7 +323,25 @@ describe("Tests the correct error messages are returned when the validation rule
      * when updating a record
      */
     it("tests the correct error message is returned when the title field is longer than 55 characters when updating a record", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Create a variable and set it to the history's id
+        $historyID = $this->history->id;
+
+        // Make a put request to the update history route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->putJson("/api/history/$historyID/update",[
+                // Enter a thing longer than 55 characters in the field
+                "title" => fake()->realTextBetween(56, 60),
+                "reason" => "Updated",
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "title" => "Title can't be longer than 55 characters",
+            ]);
     });
 })->group("HistoryTitleUpdateErrorsTests");
 
