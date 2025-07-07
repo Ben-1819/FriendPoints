@@ -1,6 +1,9 @@
-import './assets/main.css'
+import "./assets/main.css";
 
-import { createApp } from 'vue'
-import App from './App.vue'
+import { createApp } from "vue";
+import { createPinia } from "pinia";
+import axios from "axios";
+import App from "./App.vue";
 
-createApp(App).mount('#app')
+window.axios = axios;
+createApp(App).use(createPinia()).mount("#app");
