@@ -353,12 +353,19 @@ describe("Tests the correct error messages are returned when the validation rule
 describe("Tests the correct error messages are returned when the validation rules for the reason field are broken when updating a record", function(){
     // Before each test
     beforeEach(function(){
+        // Create a user using the user factory
+        $this->user = User::factory()->createOne();
 
+        // Create a friend that belongs to the user
+        $this->friend = createFriend($this->user);
+
+        // Create a history that belongs to the friend
+        $this->history = createHistory($this->friend);
     });
 
     // After each test
     afterEach(function(){
-
+        log::info("Test in HistoryReasonUpdateErrorsTest group complete");
     });
 
     /**
@@ -367,7 +374,25 @@ describe("Tests the correct error messages are returned when the validation rule
      * a record
      */
     it("tests the correct error message is returned when the reason field is empty when updating a record", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Create a variable and set it to the history's id
+        $historyID = $this->history->id;
+
+        // Make a put request to the update history route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->putJson("/api/history/$historyID/update",[
+                "title" => "Updated",
+                // Leave the reason field empty
+                "reason" => "",
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "reason" => "Reason is a required field",
+            ]);
     });
 
     /**
@@ -376,7 +401,25 @@ describe("Tests the correct error messages are returned when the validation rule
      * updating a record
      */
     it("tests the correct error message is returned when the reason field is not a string when updating a record", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Create a variable and set it to the history's id
+        $historyID = $this->history->id;
+
+        // Make a put request to the update history route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->putJson("/api/history/$historyID/update",[
+                "title" => "Updated",
+                // Enter an integer in the reason field
+                "reason" => 1,
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "reason" => "Reason must be string value",
+            ]);
     });
 
     /**
@@ -385,6 +428,24 @@ describe("Tests the correct error messages are returned when the validation rule
      * when updating record
      */
     it("tests the correct error message is returned when the reason field is longer than 255 characters when updating a record", function(){
+        // Create a token for the user
+        $token = JWTAuth::fromUser($this->user);
 
+        // Create a variable and set it to the history's id
+        $historyID = $this->history->id;
+
+        // Make a put request to the update history route
+        $response = $this->withHeader("Authorization", "Bearer $token")
+            ->putJson("/api/history/$historyID/update",[
+                "title" => "Updated",
+                // Enter a string longer than 255 characters in the reason field
+                "reason" => fake()->realTextBetween(256, 260),
+            ]);
+
+        // Declare what the response should be
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors([
+                "reason" => "Reason can't be longer than 255 characters",
+            ]);
     });
 })->group("HistoryReasonUpdateErrorsTests");
