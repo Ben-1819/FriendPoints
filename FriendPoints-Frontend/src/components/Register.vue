@@ -75,6 +75,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import { useAuthStore } from "@/stores/auth";
 import { mapStores } from "pinia";
 export default {
@@ -96,9 +97,8 @@ export default {
     async register() {
       try {
         // Make a post request to the register route
-        const response = await axios.post(
-          "http://127.0.0.1:8000/api/register",
-          {
+        const response = await axios
+          .post("http://127.0.0.1:8000/api/register", {
             // Send the first_name variable in the first name field
             first_name: this.first_name,
             // Send the last_name variable in the last name field
@@ -107,11 +107,14 @@ export default {
             email: this.email,
             // Send the password variable in the password field
             password: this.password,
-          }
-        );
-        this.authStore.setToken(response.data.token);
-        this.authStore.setUser(response.data.user);
-        localStorage.setItem("token", response.data.token);
+          })
+          .then((response) => {
+            const token = response.data.token;
+            const user = response.data.user;
+            this.authStore.setUser(response.data.user);
+            this.authStore.setToken(token);
+            localStorage.setItem("token", response.data.token);
+          });
       } catch (error) {
         console.log("An error occured" + error);
         // Use an if statement to check for validation errors
