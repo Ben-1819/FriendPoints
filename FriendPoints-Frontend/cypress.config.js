@@ -6,6 +6,7 @@ export default defineConfig({
       framework: "vue",
       bundler: "vite",
     },
+    supportFile: "cypress/support/component.js",
   },
 
   e2e: {
