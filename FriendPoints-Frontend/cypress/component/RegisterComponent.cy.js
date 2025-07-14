@@ -181,3 +181,114 @@ describe("Tests to ensure the last_name error messages are returned when invalid
     cy.noPasswordErrors();
   });
 });
+
+describe("Tests to ensure the email error messages are returned when invalid data is entered into the email field", () => {
+  it("tests the correct error message is returned when the email field is left empty", () => {
+    // Mount the component
+    cy.mount(Register);
+
+    // Check there are no errors
+    cy.noErrors();
+
+    // Call the custom register command
+    cy.register({
+      first_name: "Ben",
+      last_name: "Brown",
+      // Leave the email field blank
+      email: "",
+      password: "password",
+    });
+
+    // Check the correct email error message is present
+    cy.shouldShowFieldError("email", "Email is a required field");
+
+    // Check the other fields have no errors
+    cy.noFirstNameErrors();
+    cy.noLastNameErrors();
+    cy.noPasswordErrors();
+  });
+
+  it("tests the correct error message is returned when the data entered into the email field is not a string value", () => {
+    // Mount the component
+    cy.mount(Register);
+
+    // Check there are no errors
+    cy.noErrors();
+
+    // Call the custom register command
+    cy.register({
+      first_name: "Ben",
+      last_name: "Brown",
+      // Enter an integer into the email field
+      email: 1,
+      password: "password",
+    });
+
+    // Check the correct email error message is present
+    cy.shouldShowFieldError("email", "Email must be of data type string");
+
+    // Check the other fields have no errors
+    cy.noFirstNameErrors();
+    cy.noLastNameErrors();
+    cy.noPasswordErrors();
+  });
+
+  it("tests the correct error message is returned when the data entered into the email field is not an email", () => {
+    // Mount the component
+    cy.mount(Register);
+
+    // Check there are no errors
+    cy.noErrors();
+
+    // Call the custom register command
+    cy.register({
+      first_name: "Ben",
+      last_name: "Brown",
+      // Enter an invalid email into the email field
+      email: "bensemail",
+      password: "password",
+    });
+
+    // Check the correct email error message is present
+    cy.shouldShowFieldError("email", "Email must be in a valid email format");
+
+    // Check the other fields have no errors
+    cy.noFirstNameErrors();
+    cy.noLastNameErrors();
+    cy.noPasswordErrors();
+  });
+
+  it("tests the correct error message is returned when the data entered into the email field is longer than 55 characters", () => {
+    // Mount the component
+    cy.mount(Register);
+
+    // Check there are no errors
+    cy.noErrors();
+
+    // Get the first name field and enter valid data into it
+    cy.get('[data-cy="firstNameInput"]').type("Ben");
+
+    // Get the last name field and enter valid data into it
+    cy.get('[data-cy="lastNameInput"]').type("Brown");
+
+    // Get the email field and enter a string 56 characters long into it
+    cy.get('[data-cy="emailInput')
+      .invoke("val", stringGen(46))
+      .type("@gmail.com")
+      .should("have.length", 56);
+
+    // Get the password field and enter valid data into it
+    cy.get('[data-cy="passwordInput"]').type("password");
+
+    // Check that the correct email error message is present
+    cy.shouldShowFieldError(
+      "email",
+      "Email can not be longer than 55 characters"
+    );
+
+    // Check the other fields have no errors
+    cy.noFirstNameErrors();
+    cy.noLastNameErrors();
+    cy.noPasswordErrors();
+  });
+});
