@@ -169,6 +169,9 @@ describe("Tests to ensure the last_name error messages are returned when invalid
     // Get the password field and enter valid data into it
     cy.get('[data-cy="passwordInput"]').type("password");
 
+    // Click the submit button
+    cy.get('[data-cy="register-button"]').click();
+
     // Check the last name error message was returned
     cy.shouldShowFieldError([
       "lastName",
@@ -280,6 +283,8 @@ describe("Tests to ensure the email error messages are returned when invalid dat
     // Get the password field and enter valid data into it
     cy.get('[data-cy="passwordInput"]').type("password");
 
+    // Click the submit button
+    cy.get('[data-cy="register-button"]').click();
     // Check that the correct email error message is present
     cy.shouldShowFieldError(
       "email",
@@ -290,5 +295,88 @@ describe("Tests to ensure the email error messages are returned when invalid dat
     cy.noFirstNameErrors();
     cy.noLastNameErrors();
     cy.noPasswordErrors();
+  });
+});
+
+describe("Tests to ensure the password error messages are returned when invalid data is entered into the password field", () => {
+  it("tests the correct error message is returned when the password field is left blank", () => {
+    // Mount the register component
+    cy.mount(Register);
+
+    // Check there are no errors
+    cy.noErrors();
+
+    // Call the custom register command
+    cy.register({
+      first_name: "Ben",
+      last_name: "Brown",
+      email: "ben@gmail.com",
+      // Leave the password field blank
+      password: "",
+    });
+
+    // Check the correct error message for the password field was returned
+    cy.shouldShowFieldError("password", "Password is a required field");
+
+    // Check no other fields have error messages
+    cy.noFirstNameErrors();
+    cy.noLastNameErrors();
+    cy.noEmailErrors();
+  });
+
+  it("tests the correct error message is returned when the password field is not a string value", () => {
+    // Mount the register component
+    cy.mount(Register);
+
+    // Check there are no errors
+    cy.noErrors();
+
+    // Call the custom register command
+    cy.register({
+      first_name: "Ben",
+      last_name: "Brown",
+      email: "ben@gmail.com",
+      // Enter an integer in the password field
+      password: 1234567,
+    });
+
+    // Check the correct error message for the password field was returned
+    cy.shouldShowFieldError(
+      "password",
+      "Password must be of the data type string"
+    );
+
+    // Check no other fields have error messages
+    cy.noFirstNameErrors();
+    cy.noLastNameErrors();
+    cy.noEmailErrors();
+  });
+
+  it("tests the correct error message is returned when the password field is less than 6 characters", () => {
+    // Mount the register component
+    cy.mount(Register);
+
+    // Check there are no errors
+    cy.noErrors();
+
+    // Call the custom register command
+    cy.register({
+      first_name: "Ben",
+      last_name: "Brown",
+      email: "ben@gmail.com",
+      // Enter a string less than 6 characters into the password field
+      password: "pass",
+    });
+
+    // Check the correct error message for the password field was returned
+    cy.shouldShowFieldError(
+      "password",
+      "Password must be at least 6 characters long"
+    );
+
+    // Check no other fields have error messages
+    cy.noFirstNameErrors();
+    cy.noLastNameErrors();
+    cy.noEmailErrors();
   });
 });
