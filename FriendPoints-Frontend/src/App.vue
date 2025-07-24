@@ -1,9 +1,11 @@
 <template>
   <header>
-    <div class="wrapper"></div>
+    <!--<div class="wrapper"></div>-->
   </header>
 
-  <main></main>
+  <main>
+    <router-view></router-view>
+  </main>
 </template>
 
 <style scoped>
