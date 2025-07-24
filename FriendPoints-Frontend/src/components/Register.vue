@@ -68,6 +68,9 @@
           <button id="register-button" data-cy="register-button">
             Register now
           </button>
+          <router-link to="/login"
+            >Already have an account? Login here</router-link
+          >
         </div>
       </div>
     </form>
