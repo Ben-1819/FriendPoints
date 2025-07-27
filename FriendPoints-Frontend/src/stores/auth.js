@@ -5,7 +5,7 @@ export const useAuthStore = defineStore("auth", {
     user: null,
     token: null,
   }),
-  actions: () => ({
+  actions: {
     setUser(user) {
       this.user = user;
     },
@@ -29,5 +29,5 @@ export const useAuthStore = defineStore("auth", {
         this.logout();
       }
     },
-  }),
+  },
 });
