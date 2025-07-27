@@ -37,70 +37,68 @@
         </div>
         <div class="bottom-buttons">
           <button id="register-button" data-cy="register-button">Login</button>
-          <router-link to="/register">Need to register for an account? Click here</router-link>
+          <router-link to="/register"
+            >Need to register for an account? Click here</router-link
+          >
         </div>
       </div>
     </form>
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref } from "vue";
 import axios from "axios";
 import { useAuthStore } from "@/stores/auth";
-import { mapStores } from "pinia";
-export default {
-  data() {
-    return {
-      email: "",
-      password: "",
-      validationErrors: {},
-    };
-  },
-  computed: {
-    ...mapStores(useAuthStore),
-  },
-  methods: {
-    // register method, allows the user to make a post request and register their account
-    async attemptLogin() {
-      try {
-        // Make a post request to the login route
-        const response = await axios
-          .post("http://127.0.0.1:8000/api/login", {
-            // Send the email variable in the email field
-            email: this.email,
-            // Send the password variable in the password field
-            password: this.password,
-          })
-          .then((response) => {
-            // Create a variable called token and set it to the token from the response data
-            const token = response.data.token;
-            // Create a variable called user and set it to the user from the response data
-            const user = response.data.user;
-            // Set the user in the auth store to the user from the response data
-            this.authStore.setUser(response.data.user);
-            // Set the token in the auth store to the variable token
-            this.authStore.setToken(token);
-            // Store the token in the browsers local storage
-            localStorage.setItem("token", token);
-          });
-      } catch (error) {
-        // Log the error to the console
-        console.log(`An error has occured ${error}`);
 
-        // Check if there were validation errors
-        if (error.response && error.response.status === 422) {
-          // Set the validation errors to the validation errors returned in the response
-          this.validationErrors = error.response.data.errors;
-        }
-      }
-    },
-    // clearFieldError method - clears the error messages whenever you start typing
-    clearFieldError(field) {
-      if (this.validationErrors[field]) {
-        delete this.validationErrors[field];
-      }
-    },
-  },
+const email = ref("");
+const password = ref("");
+const validationErrors = ref({});
+
+const authStore = useAuthStore();
+
+// register method, allows the user to make a post request and register their account
+const attemptLogin = async () => {
+  try {
+    // Make a post request to the login route
+    const response = await axios
+      .post("http://127.0.0.1:8000/api/login", {
+        // Send the email variable in the email field
+        email: email.value,
+        // Send the password variable in the password field
+        password: password.value,
+      })
+      .then((response) => {
+        // Create a variable called token and set it to the token from the response data
+        const token = response.data.token;
+        // Create a variable called user and set it to the user from the response data
+        const user = response.data.user;
+        // Set the user in the auth store to the user from the response data
+        console.log("authStore:", authStore);
+        authStore.setUser(response.data.user);
+        // Set the token in the auth store to the variable token
+        authStore.setToken(token);
+        // Store the token in the browsers local storage
+        localStorage.setItem("token", token);
+        authStore.fetchUser();
+      });
+  } catch (error) {
+    // Log the error to the console
+    //console.log(`An error has occured ${error.message}`);
+    console.log("An error has occured: ", error);
+
+    // Check if there were validation errors
+    if (error.response && error.response.status === 422) {
+      // Set the validation errors to the validation errors returned in the response
+      validationErrors.value = error.response.data.errors;
+    }
+  }
+};
+// clearFieldError method - clears the error messages whenever you start typing
+const clearFieldError = (field) => {
+  if (validationErrors.value[field]) {
+    delete validationErrors.value[field];
+  }
 };
 </script>
 
