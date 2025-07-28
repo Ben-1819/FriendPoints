@@ -50,7 +50,9 @@
 import { ref } from "vue";
 import axios from "axios";
 import { useAuthStore } from "@/stores/auth";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const email = ref("");
 const password = ref("");
 const validationErrors = ref({});
@@ -81,6 +83,7 @@ const attemptLogin = async () => {
         // Store the token in the browsers local storage
         localStorage.setItem("token", token);
         authStore.fetchUser();
+        router.push("/home");
       });
   } catch (error) {
     // Log the error to the console
