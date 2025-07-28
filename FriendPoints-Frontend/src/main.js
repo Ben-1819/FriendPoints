@@ -7,6 +7,7 @@ import axios from "axios";
 import App from "./App.vue";
 import Register from "./components/Register.vue";
 import Login from "./components/Login.vue";
+import Home from "./components/Home.vue";
 
 const app = createApp(App);
 const pinia = createPinia();
@@ -18,6 +19,7 @@ const router = createRouter({
   routes: [
     { path: "/register", component: Register },
     { path: "/login", component: Login },
+    { path: "/home", component: Home },
   ],
 });
 app.use(pinia).use(router).mount("#app");
