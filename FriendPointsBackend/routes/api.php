@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\UserController;
 
 Route::controller(AuthController::class)->group(function(){
     Route::post("/register", "register");
@@ -13,6 +14,10 @@ Route::controller(AuthController::class)->group(function(){
 Route::controller(AuthController::class)->middleware("jwt")->group(function(){
     Route::get("/user", "getUser");
     Route::post("/logout", "logout");
+});
+
+Route::controller(UserController::class)->middleware("jwt")->group(function(){
+    Route::get("/userIndex", "index");
 });
 
 Route::controller(FriendController::class)->middleware("jwt")->group(function(){
