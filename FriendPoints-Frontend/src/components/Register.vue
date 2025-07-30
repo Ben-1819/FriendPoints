@@ -113,10 +113,10 @@ export default {
           })
           .then((response) => {
             const token = response.data.token;
+            localStorage.setItem("token", token);
             const user = response.data.user;
             this.authStore.setUser(response.data.user);
             this.authStore.setToken(token);
-            localStorage.setItem("token", response.data.token);
           });
       } catch (error) {
         console.log("An error occured" + error);
