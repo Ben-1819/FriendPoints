@@ -3,7 +3,7 @@
     <h1 class="title">Friend Points</h1>
     <h2 class="title">Welcome {{ authStore.user.first_name }}</h2>
     <div class="buttonGroup">
-      <button data-cy="allUsersBtn">All Users</button>
+      <button data-cy="allUsersBtn" @click="allUsers">All Users</button>
       <button data-cy="friendsBtn">Your Friends</button>
     </div>
     <div class="buttonGroup">
@@ -18,8 +18,6 @@ import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
-
-let user = ref({});
 
 // Create a constant called router and set it to the useRouter method
 const router = useRouter();
@@ -40,7 +38,10 @@ onMounted(() => {
   //user = authStore.fetchUser();
 });
 
-const allUsers = () => {};
+const allUsers = () => {
+  // Push the user to the users page
+  router.push("/users");
+};
 
 const yourFriends = () => {};
 
