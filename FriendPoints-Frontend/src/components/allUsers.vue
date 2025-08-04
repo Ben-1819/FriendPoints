@@ -5,7 +5,9 @@
       <ul>
         <li v-for="user in users" :key="user.id">
           {{ user.first_name }} {{ user.last_name }}
-          <button class="addFriendBtn">Add user as friend</button>
+          <button class="addFriendBtn" @click="addFriend(user.id)">
+            Add user as friend
+          </button>
         </li>
       </ul>
     </div>
@@ -44,6 +46,12 @@ onMounted(() => {
     console.log("Calling the all users method");
     // Call the allUsers method
     allUsers();
+  } else if (token === null) {
+    console.log(
+      "No token in local storage, sending the user back to the login screen"
+    );
+    // Send the user back to the login screen
+    router.push("/login");
   }
 });
 
@@ -72,7 +80,10 @@ const home = () => {
 };
 
 // addFriend method - Takes the user to the add friend component
-const addFriend = () => {};
+const addFriend = (id) => {
+  console.log("addFriend running");
+  router.push(`/addFriend/${id}`);
+};
 </script>
 
 <style scoped>

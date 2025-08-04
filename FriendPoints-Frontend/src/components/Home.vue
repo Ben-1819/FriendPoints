@@ -34,8 +34,11 @@ onMounted(() => {
     authStore.setToken(token);
     // Call the fetchUser action in the authStore
     authStore.fetchUser();
+  } else if (token === null) {
+    console.log("No token found in local storage");
+    // Send the user back to the login screen
+    router.push("/login");
   }
-  //user = authStore.fetchUser();
 });
 
 const allUsers = () => {
