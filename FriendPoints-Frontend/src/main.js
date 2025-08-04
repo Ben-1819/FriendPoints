@@ -9,6 +9,7 @@ import Register from "./components/Register.vue";
 import Login from "./components/Login.vue";
 import Home from "./components/Home.vue";
 import allUsers from "./components/allUsers.vue";
+import addFriend from "./components/addFriend.vue";
 
 const app = createApp(App);
 const pinia = createPinia();
@@ -22,6 +23,7 @@ const router = createRouter({
     { path: "/login", component: Login },
     { path: "/home", component: Home },
     { path: "/users", component: allUsers },
+    { path: "/addFriend/:id", component: addFriend, props: true },
   ],
 });
 app.use(pinia).use(router).mount("#app");
