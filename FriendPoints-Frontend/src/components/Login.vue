@@ -17,6 +17,12 @@
             class="validationError"
             >{{ validationErrors.email }}</span
           >
+          <span
+            v-if="credentialsError"
+            data-cy="credentialsError"
+            class="validationError"
+            >{{ credentialsError }}</span
+          >
         </div>
         <div class="group">
           <input
@@ -56,7 +62,7 @@ const router = useRouter();
 const email = ref("");
 const password = ref("");
 const validationErrors = ref({});
-
+const credentialsError = ref();
 const authStore = useAuthStore();
 
 // register method, allows the user to make a post request and register their account
@@ -94,6 +100,8 @@ const attemptLogin = async () => {
     if (error.response && error.response.status === 422) {
       // Set the validation errors to the validation errors returned in the response
       validationErrors.value = error.response.data.errors;
+    } else if (error.response && error.response.status === 401) {
+      credentialsError.value = error.response.data.error;
     }
   }
 };
@@ -101,6 +109,7 @@ const attemptLogin = async () => {
 const clearFieldError = (field) => {
   if (validationErrors.value[field]) {
     delete validationErrors.value[field];
+    delete credentialsError.value;
   }
 };
 </script>
