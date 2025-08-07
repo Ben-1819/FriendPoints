@@ -19,15 +19,27 @@ class FriendController extends Controller
      * the owner_id column matches the current users id
      */
     public function index(){
+        $user = auth()->user();
         log::info("Index method running");
 
         /**
          * Get all records from the friends table where the owner_id
          * column matches the currently logged in users id
          */
+
         $all_friends = Friend::where("owner_id", Auth::user()->id)
+            ->with(['user:id,first_name,last_name'])
             ->orderBy("points", "desc")
-            ->get();
+            ->get()
+            ->map(function($friend){
+                return[
+                    "id" => $friend->id,
+                    "first_name" => $friend->user->first_name ?? '',
+                    "last_name" => $friend->user->last_name ?? '',
+                    "points" => $friend->points,
+                    "group" => $friend->group,
+                ];
+            });
         log::info("All friends successfully retrieved");
 
         // Return the json response containing the friends
@@ -51,8 +63,18 @@ class FriendController extends Controller
          */
         $group1_friends = Friend::where("owner_id", Auth::user()->id)
             ->whereIn("group", ["Both", "Group1"])
+            ->with(['user:id,first_name,last_name'])
             ->orderBy("points", "desc")
-            ->get();
+            ->get()
+            ->map(function($friend){
+                return[
+                    "id" => $friend->id,
+                    "first_name" => $friend->user->first_name ?? '',
+                    "last_name" => $friend->user->last_name ?? '',
+                    "points" => $friend->points,
+                    "group" => $friend->group,
+                ];
+            });
         log::info("All group 1 friends successfully retrieved");
 
         // Return the retrieved data in a json response
@@ -76,8 +98,18 @@ class FriendController extends Controller
          */
         $group2_friends = Friend::where("owner_id", Auth::user()->id)
             ->whereIn("group", ["Both", "Group2"])
+            ->with(['user:id,first_name,last_name'])
             ->orderBy("points", "desc")
-            ->get();
+            ->get()
+            ->map(function($friend){
+                return[
+                    "id" => $friend->id,
+                    "first_name" => $friend->user->first_name ?? '',
+                    "last_name" => $friend->user->last_name ?? '',
+                    "points" => $friend->points,
+                    "group" => $friend->group,
+                ];
+            });
         log::info("All group 2 friends successfully retrived");
 
         // Return the retrieved records in a json response
@@ -98,7 +130,18 @@ class FriendController extends Controller
          * the owner_id column matches the id of the owner passed in
          */
         $all_friends = Friend::where("owner_id", $id)
-            ->orderBy("points", "desc");
+            ->with(['user:id,first_name,last_name'])
+            ->orderBy("points", "desc")
+            ->get()
+            ->map(function($friend){
+                return[
+                    "id" => $friend->id,
+                    "first_name" => $friend->user->first_name,
+                    "last_name" => $friend->user->last_name,
+                    "points" => $friend->points,
+                    "group" => $friend->group,
+                ];
+            });
         log::info("All friends for user with an id of {id} retrieved", ["id" => $id]);
 
         // Return the retrieved records in a json response

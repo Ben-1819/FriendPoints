@@ -22,7 +22,7 @@ class Friend extends Model
     /**
      * Define the relationship between Friend and User for the user_id column
      */
-    public function friend(){
+    public function user(){
         return $this->belongsTo(User::class);
     }
 
