@@ -4,7 +4,7 @@
     <h2 class="title">Welcome {{ authStore.user.first_name }}</h2>
     <div class="buttonGroup">
       <button data-cy="allUsersBtn" @click="allUsers">All Users</button>
-      <button data-cy="friendsBtn">Your Friends</button>
+      <button data-cy="friendsBtn" @click="friendsMenu">Your Friends</button>
     </div>
     <div class="buttonGroup">
       <button data-cy="rankingsBtn">Current Rankings</button>
@@ -46,7 +46,11 @@ const allUsers = () => {
   router.push("/users");
 };
 
-const yourFriends = () => {};
+const friendsMenu = () => {
+  // Push the user to the allFriends page
+  console.log("Moving user to the friends menu");
+  router.push("/friendMenu");
+};
 
 const currentRankings = () => {};
 
