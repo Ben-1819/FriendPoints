@@ -74,6 +74,9 @@ const backHome = () => {
   // Push the user back to the home component
   router.push("/home");
 };
+
+// editFriend method - Takes the user to the edit friend component
+const editFriend = () => {};
 </script>
 
 <style scoped>
