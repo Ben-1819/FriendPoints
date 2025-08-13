@@ -58,16 +58,18 @@ onMounted(() => {
 // allUsers method - fetches all of the users from the database
 const allUsers = async () => {
   try {
-    const response = await axios.get("http://127.0.0.1:8000/api/userIndex", {
+    const response = await axios.get("http://127.0.0.1:8000/api/showOptions", {
       headers: {
         // Pass the JWT in the authorization header
         Authorization: `Bearer ${authStore.token}`,
       },
     });
-    console.log("Retrieved all users");
+    console.log(
+      "Retrieved all users that the current user is not friends with"
+    );
 
     // Set the users constant to the users returned in the json response
-    users.value = response.data.users;
+    users.value = response.data.options;
   } catch (error) {
     console.log("An error has occured");
     console.log("An error has occured".error);
