@@ -10,6 +10,9 @@ import Login from "./components/Login.vue";
 import Home from "./components/Home.vue";
 import allUsers from "./components/allUsers.vue";
 import addFriend from "./components/addFriend.vue";
+import friendMenu from "./components/friendMenu.vue";
+import allFriends from "./components/allFriends.vue";
+import group1Friends from "./components/group1Friends.vue";
 
 const app = createApp(App);
 const pinia = createPinia();
@@ -24,6 +27,9 @@ const router = createRouter({
     { path: "/home", component: Home },
     { path: "/users", component: allUsers },
     { path: "/addFriend/:id", component: addFriend, props: true },
+    { path: "/friendMenu", component: friendMenu },
+    { path: "/allFriends", component: allFriends },
+    { path: "/group1Friends", component: group1Friends },
   ],
 });
 app.use(pinia).use(router).mount("#app");
