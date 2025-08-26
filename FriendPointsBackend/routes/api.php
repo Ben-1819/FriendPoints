@@ -29,6 +29,7 @@ Route::controller(FriendController::class)->middleware("jwt")->group(function(){
     Route::get("/{id}/group2/index", "otherGroup2Friends");
     Route::get("/showOptions", "showOptions");
     Route::post("/{id}/store", "store");
+    Route::get("/{id}/show", "show");
 });
 
 Route::controller(FriendController::class)->middleware(["jwt", "friendOwner"])->group(function(){

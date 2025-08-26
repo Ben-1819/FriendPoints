@@ -231,6 +231,31 @@ class FriendController extends Controller
     }
 
     /**
+     * Show method - Retrieves a single record from the friends table
+     */
+    public function show($id){
+        log::info("Show method running");
+
+        // Retrieve the friend record from the table
+        $friend = Friend::select('friends.*', 'users.first_name', 'users.last_name')
+            ->join('users', 'users.id', '=', 'friends.user_id')
+            ->where('friends.id', $id)
+            ->first();
+
+        log::info("Friend retrieved");
+        log::info("Friend's id: ". $friend->user->id);
+        log::info("Friend's first name: ". $friend->user->first_name);
+        log::info("Friend's last name: ". $friend->user->last_name);
+        log::info("Friend's points: ". $friend->points);
+        log::info("Friend's group: ". $friend->group);
+
+        // Return the friend record
+        return response()->json([
+            "friend" => $friend,
+        ], 200);
+    }
+
+    /**
      * Store method - Stores a new record in the friends table
      */
     public function store(StoreFriendRequest $request, $id){
