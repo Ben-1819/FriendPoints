@@ -15,6 +15,7 @@ import allFriends from "./components/allFriends.vue";
 import group1Friends from "./components/group1Friends.vue";
 import editFriendMenu from "./components/editFriendMenu.vue";
 import addPoints from "./components/addPoints.vue";
+import removePoints from "./components/removePoints.vue";
 
 const app = createApp(App);
 const pinia = createPinia();
@@ -34,6 +35,7 @@ const router = createRouter({
     { path: "/group1Friends", component: group1Friends },
     { path: "/editFriendMenu/:id", component: editFriendMenu, props: true },
     { path: "/addPoints/:id", component: addPoints, props: true },
+    { path: "/removePoints/:id", component: removePoints, props: true },
   ],
 });
 app.use(pinia).use(router).mount("#app");
