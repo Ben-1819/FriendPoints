@@ -9,7 +9,10 @@
       <ul>
         <li v-for="friend in friends" :key="friend.id">
           {{ friend.first_name }} {{ friend.last_name }} - Points:
-          {{ friend.points }} <button class="aButton">Edit friend</button>
+          {{ friend.points }}
+          <button class="aButton" @click="editFriend(friend.id)">
+            Edit friend
+          </button>
         </li>
       </ul>
     </div>
@@ -76,7 +79,9 @@ const backHome = () => {
 };
 
 // editFriend method - Takes the user to the edit friend component
-const editFriend = () => {};
+const editFriend = (id) => {
+  router.push(`/editFriendMenu/${id}`);
+};
 </script>
 
 <style scoped>
