@@ -54,7 +54,7 @@ class HistoryController extends Controller
      * Store method - Used to store a new record in the Friend
      * table
      */
-    public function store(StoreHistoryRequest $request){
+    public function store(StoreHistoryRequest $request, $id){
         log::info("The store method in the history controller is running.");
 
         // Validate the users input
@@ -63,7 +63,7 @@ class HistoryController extends Controller
 
         // Create a new record in the History table
         $history = new History([
-            "friend_id" => $request["id"],
+            "friend_id" => $id,
             "title" => $request["title"],
             "reason" => $request["reason"],
             "before" => $request["before"],
