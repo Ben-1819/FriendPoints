@@ -136,7 +136,7 @@ const changeGroup = async () => {
 </script>
 
 <style scoped>
-.topScreen {
+.topscreen {
   display: flex;
   flex-direction: row;
   justify-content: start;
