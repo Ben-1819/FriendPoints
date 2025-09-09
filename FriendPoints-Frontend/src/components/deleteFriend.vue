@@ -1,16 +1,23 @@
 <template>
   <div>
     <div class="topscreen">
-      <button class="abutton" @click="home">Home</button>
+      <button class="abutton">
+        <router-link id="blackText" to="/home">Home</router-link>
+      </button>
       <h1 class="title">Confirm delete friend</h1>
     </div>
     <div class="mainArea">
-      <div class="friendInformation">
-        <p>First name: {{ friend.first_name }}</p>
-        <p>Last name: {{ friend.last_name }}</p>
-        <p>Group: {{ friend.group }}</p>
-        <p>Points: {{ friend.points }}</p>
-      </div>
+      <form @submit.prevent="deleteFriend">
+        <div class="friendInformation">
+          <p>First name: {{ friend.first_name }}</p>
+          <p>Last name: {{ friend.last_name }}</p>
+          <p>Group: {{ friend.group }}</p>
+          <p>Points: {{ friend.points }}</p>
+        </div>
+        <div class="centred">
+          <button type="submit" class="abutton">Delete Friend</button>
+        </div>
+      </form>
     </div>
   </div>
 </template>
@@ -38,6 +45,7 @@ const friend = ref([]);
 const success = ref("");
 
 const errors = ref([]);
+
 // onMounted hook - runs when the component is mounted
 onMounted(() => {
   console.log("deleteFriend component running");
@@ -67,8 +75,21 @@ const deleteFriend = async () => {
         },
       }
     );
+
+    console.log(
+      "Friend has been deleted, sending the user back to the home page in 2 seconds"
+    );
+
+    success.value = response.data.success;
+
+    setTimeout(() => {
+      router.push("/home");
+    }, 2000);
   } catch (error) {
     console.log("An error has occurred: ", error);
+    if (error.response && error.response.status === 401) {
+      errors.value = error.response.data.error;
+    }
   }
 };
 
@@ -92,4 +113,52 @@ const home = () => {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.topscreen {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.title {
+  text-align: center;
+}
+
+.mainArea {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.mainArea > * {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.friendInformation {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.abutton {
+  border-radius: 15%;
+  border: none;
+  background-color: #10b981;
+}
+
+.centred {
+  display: flex;
+  flex-direction: row;
+}
+
+#blackText {
+  color: black;
+}
+</style>
