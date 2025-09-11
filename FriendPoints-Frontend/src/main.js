@@ -18,6 +18,7 @@ import addPoints from "./components/addPoints.vue";
 import removePoints from "./components/removePoints.vue";
 import changeGroup from "./components/changeGroup.vue";
 import deleteFriend from "./components/deleteFriend.vue";
+import showFriend from "./components/showFriend.vue";
 
 const app = createApp(App);
 const pinia = createPinia();
@@ -40,6 +41,7 @@ const router = createRouter({
     { path: "/removePoints/:id", component: removePoints, props: true },
     { path: "/changeGroup/:id", component: changeGroup, props: true },
     { path: "/deleteFriend/:id", component: deleteFriend, props: true },
+    { path: "/showFriend/:id", component: showFriend, props: true },
   ],
 });
 app.use(pinia).use(router).mount("#app");
