@@ -121,7 +121,7 @@ const changeGroup = async () => {
 
     success.value = response.data.success;
     setTimeout(() => {
-      console.log("Placeholder");
+      router.push(`/showFriend/${id}`);
     }, 2000);
   } catch (error) {
     console.log("An error has occurred: ".error);

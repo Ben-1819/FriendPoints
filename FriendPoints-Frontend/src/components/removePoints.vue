@@ -163,7 +163,7 @@ const removePoints = async () => {
     // Wait for 2 seconds
     console.log("Sending the user to the showFriendComponent");
     setTimeout(() => {
-      console.log("placeholder");
+      router.push(`/showFriend/${id}`);
     }, 2000);
   } catch (error) {
     console.log("An error has occurred: ".error);

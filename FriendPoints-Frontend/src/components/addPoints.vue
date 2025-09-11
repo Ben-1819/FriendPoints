@@ -166,7 +166,7 @@ const addPoints = async () => {
     // Wait for 2 seconds
     console.log("Sending the user to the showFriend component");
     setTimeout(() => {
-      console.log("Placeholder");
+      router.push(`/showFriend/${id}`);
     }, 2000);
   } catch (error) {
     console.log("An error has occurred".error);
