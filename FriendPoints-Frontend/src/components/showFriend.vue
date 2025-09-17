@@ -50,7 +50,7 @@ const router = useRouter();
 
 const route = useRoute();
 
-const id = route.params.id();
+const id = route.params.id;
 
 const friend = ref([]);
 
