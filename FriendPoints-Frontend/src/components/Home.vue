@@ -9,6 +9,9 @@
     <div class="buttonGroup">
       <button data-cy="rankingsBtn">Current Rankings</button>
       <button data-cy="logoutBtn" @click="logout">Logout</button>
+      <button>
+        <router-link to="/allHistory">All History Records</router-link>
+      </button>
     </div>
   </div>
 </template>
