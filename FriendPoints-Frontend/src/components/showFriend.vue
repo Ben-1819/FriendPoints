@@ -67,7 +67,7 @@ onMounted(() => {
 
 const getFriendRecord = async () => {
   try {
-    const response = await axios.get(`http:127.0.0.1:8000/api/${id}/show`, {
+    const response = await axios.get(`http://127.0.0.1:8000/api/${id}/show`, {
       headers: { Authorization: `Bearer ${authStore.token}` },
     });
     console.log("Friend retrieved from the database");
