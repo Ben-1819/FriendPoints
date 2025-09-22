@@ -20,6 +20,7 @@ import changeGroup from "./components/changeGroup.vue";
 import deleteFriend from "./components/deleteFriend.vue";
 import showFriend from "./components/showFriend.vue";
 import AllHistory from "./components/AllHistory.vue";
+import ShowHistory from "./components/ShowHistory.vue";
 
 const app = createApp(App);
 const pinia = createPinia();
@@ -44,6 +45,7 @@ const router = createRouter({
     { path: "/deleteFriend/:id", component: deleteFriend, props: true },
     { path: "/showFriend/:id", component: showFriend, props: true },
     { path: "/allHistory/", component: AllHistory },
+    { path: "/showHistory/:id", component: ShowHistory, props: true },
   ],
 });
 app.use(pinia).use(router).mount("#app");
