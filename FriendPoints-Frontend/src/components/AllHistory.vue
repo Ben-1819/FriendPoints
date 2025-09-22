@@ -16,7 +16,11 @@
           <h4 class="history-text">{{ history.title }}</h4>
           <p class="history-text">{{ truncateText(history.reason, 15) }}</p>
           <div class="centred">
-            <button class="abutton">View History</button>
+            <button class="abutton">
+              <router-link class="blackText" :to="`/showHistory/${history.id}`"
+                >View History</router-link
+              >
+            </button>
           </div>
         </div>
       </div>
