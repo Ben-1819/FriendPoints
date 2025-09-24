@@ -7,9 +7,9 @@
       </button>
     </div>
     <div class="mainArea">
-      <p>Name: {{}}</p>
-      <p>Group: {{}}</p>
-      <p>Points: {{}}</p>
+      <p>Name: {{ (friend.first_name, friend.last_name) }}</p>
+      <p>Group: {{ friend.group }}</p>
+      <p>Points: {{ friend.points }}</p>
     </div>
     <div class="options">
       <button class="abutton">
@@ -60,6 +60,7 @@ onMounted(() => {
   if (token) {
     authStore.setToken(token);
     authStore.fetchUser();
+    getFriendRecord();
   } else if (token === null) {
     router.push("/home");
   }
