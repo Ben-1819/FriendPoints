@@ -11,7 +11,7 @@
         <p>Reason for change: {{ history.reason }}</p>
         <p>Points before: {{ history.before }}</p>
         <p>Points after: {{ history.after }}</p>
-        <p>Total change: {{ (changeType, history.change) }}</p>
+        <p>Total change: {{ changeType + history.change }}</p>
         <p>{{ history.friend_id }}</p>
       </div>
       <div class="buttonsSection">
