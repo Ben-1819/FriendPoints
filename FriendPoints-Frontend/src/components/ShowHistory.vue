@@ -20,10 +20,8 @@
             >View Friend</router-link
           >
         </button>
-        <button class="abutton">
-          <router-link class="blackText" :to="`/home`"
-            >All historical records for this friend</router-link
-          >
+        <button class="abutton" @click="goToFriendHistories">
+          All historical records for this friend
         </button>
       </div>
       <div class="buttonsSection">
@@ -110,6 +108,15 @@ const getFriendRecord = async () => {
     console.log("An error has occurred: ", error);
     errors.value = error.response.data.errors;
   }
+};
+
+const goToFriendHistories = () => {
+  router.push({
+    name: "FriendHistories",
+    params: {
+      id: friend.value.id,
+    },
+  });
 };
 </script>
 
