@@ -145,6 +145,6 @@ const truncateText = (str, maxLength) => {
 
 .centred {
   display: flex;
-  justify-content: centerz;
+  justify-content: center;
 }
 </style>
