@@ -41,7 +41,7 @@ class HistoryController extends Controller
          * the friend_id column matches the id passed in the
          * parameters
          */
-        $records = History::where("friend_id", $id)->latest();
+        $records = History::where("friend_id", $id)->latest()->get();
 
         log::info("Records successfully retrieved");
         // Return the records in a json response
