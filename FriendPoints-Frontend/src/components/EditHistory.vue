@@ -1,5 +1,52 @@
 <template>
-  <div></div>
+  <div>
+    <div class="topscreen">
+      <button class="abutton">
+        <router-link class="blackText" to="/home">Home</router-link>
+      </button>
+      <h1 id="title">Update Historical record</h1>
+    </div>
+    <div class="mainArea">
+      <div class="friendInformation">
+        <p>
+          Friend historical record belongs to:
+          {{ friend.first_name + " " + friend.last_name }}
+        </p>
+      </div>
+      <div class="updateHistoryArea">
+        <form @submit.prevent="updateHistoryRecord">
+          <h2 id="title">Update the historical records reason or title</h2>
+          <div class="updateTitleInput">
+            <label for="titleInput">Title:</label>
+            <input
+              type="text"
+              name="titleInput"
+              id="titleInput"
+              v-model="history.title"
+            />
+            <span v-if="errors.title" class="validationErrors">{{
+              errors.title
+            }}</span>
+          </div>
+          <div class="updateReasonInput">
+            <label for="reasonInput">Reason:</label>
+            <input
+              type="text"
+              name="reasonInput"
+              id="reasonInput"
+              v-model="history.reason"
+            />
+            <span v-if="errors.reason" class="validationErrors">{{
+              errors.reason
+            }}</span>
+          </div>
+          <div class="centred">
+            <button type="submit" class="abutton">Update record</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
