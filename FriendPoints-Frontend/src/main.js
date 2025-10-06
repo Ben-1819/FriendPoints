@@ -22,6 +22,7 @@ import showFriend from "./components/showFriend.vue";
 import AllHistory from "./components/AllHistory.vue";
 import ShowHistory from "./components/ShowHistory.vue";
 import FriendHistories from "./components/FriendHistories.vue";
+import EditHistory from "./components/EditHistory.vue";
 
 const app = createApp(App);
 const pinia = createPinia();
@@ -51,6 +52,12 @@ const router = createRouter({
       path: "/friendHistories/:id",
       name: "FriendHistories",
       component: FriendHistories,
+      props: true,
+    },
+    {
+      path: "/editHistory/:id",
+      name: "EditHistory",
+      component: EditHistory,
       props: true,
     },
   ],
