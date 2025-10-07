@@ -25,10 +25,8 @@
         </button>
       </div>
       <div class="buttonsSection">
-        <button class="abutton">
-          <router-link class="blackText" :to="`/home`"
-            >Edit historical record</router-link
-          >
+        <button class="abutton" @click="goToEditHistory">
+          Edit History record
         </button>
         <button class="abutton" @click="deleteHistoryRecord">
           Delete historical record
@@ -122,6 +120,36 @@ const goToFriendHistories = () => {
       id: friend.value.id,
     },
   });
+};
+
+const goToEditHistory = () => {
+  router.push({
+    name: "EditHistory",
+    params: {
+      id: history.value.id,
+    },
+  });
+};
+
+const deleteHistoryRecord = async () => {
+  try {
+    const response = await axios.delete(
+      `http://127.0.0.1:8000/api/${history.value.id}/delete`,
+      {
+        headers: { Authorization: `Bearer ${authStore.token}` },
+      }
+    );
+    console.log(
+      "Historical record successfully deleted, returning to home page in 2 seconds"
+    );
+
+    success.value = response.data.success;
+    setTimeout(() => {
+      router.push("/home");
+    }, 2000);
+  } catch (error) {
+    console.log("An error has occurred: ", error);
+  }
 };
 </script>
 
