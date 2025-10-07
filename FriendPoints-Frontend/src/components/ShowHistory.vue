@@ -123,27 +123,6 @@ const goToFriendHistories = () => {
     },
   });
 };
-
-const deleteHistoryRecord = async () => {
-  try {
-    const response = await axios.delete(
-      `http://127.0.0.1:8000/api/${history.value.id}/delete`,
-      {
-        headers: { Authorization: `Bearer ${authStore.token}` },
-      }
-    );
-    console.log(
-      "Historical record successfully deleted, returning to home page in 2 seconds"
-    );
-
-    success.value = response.data.success;
-    setTimeout(() => {
-      router.push("/home");
-    }, 2000);
-  } catch (error) {
-    console.log("An error has occurred: ", error);
-  }
-};
 </script>
 
 <style scoped>

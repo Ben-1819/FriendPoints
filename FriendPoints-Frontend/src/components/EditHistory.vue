@@ -45,6 +45,16 @@
           </div>
         </form>
       </div>
+      <div class="centered">
+        <h2 id="title">Delete history</h2>
+        <p>
+          Only click this button if you want to delete the current history
+          record
+        </p>
+        <button class="abutton" @click="deleteHistoryRecord">
+          Delete history record
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -148,6 +158,27 @@ const showHistory = () => {
     name: "ShowHistory",
     params: history.value.id,
   });
+};
+
+const deleteHistoryRecord = async () => {
+  try {
+    const response = await axios.delete(
+      `http://127.0.0.1:8000/api/${history.value.id}/delete`,
+      {
+        headers: { Authorization: `Bearer ${authStore.token}` },
+      }
+    );
+    console.log(
+      "Historical record successfully deleted, returning to home page in 2 seconds"
+    );
+
+    success.value = response.data.success;
+    setTimeout(() => {
+      router.push("/home");
+    }, 2000);
+  } catch (error) {
+    console.log("An error has occurred: ", error);
+  }
 };
 </script>
 
