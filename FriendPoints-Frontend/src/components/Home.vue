@@ -38,7 +38,7 @@ onMounted(() => {
   } else if (token === null) {
     console.log("No token found in local storage");
     // Send the user back to the login screen
-    router.push("/login");
+    logout();
   }
 });
 
