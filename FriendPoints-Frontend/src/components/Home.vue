@@ -9,9 +9,7 @@
     <div class="buttonGroup">
       <button data-cy="rankingsBtn">Current Rankings</button>
       <button data-cy="logoutBtn" @click="logout">Logout</button>
-      <button>
-        <router-link to="/allHistory">All History Records</router-link>
-      </button>
+      <button @click="goToAllHistories">All history records</button>
     </div>
   </div>
 </template>
@@ -46,17 +44,26 @@ onMounted(() => {
 
 const allUsers = () => {
   // Push the user to the users page
-  router.push("/users");
+  router.push({
+    name: "Users",
+  });
 };
 
 const friendsMenu = () => {
   // Push the user to the allFriends page
   console.log("Moving user to the friends menu");
-  router.push("/friendMenu");
+  router.push({
+    name: "FriendMenu",
+  });
 };
 
 const currentRankings = () => {};
 
+const goToAllHistories = () => {
+  router.push({
+    name: "AllHistory",
+  });
+};
 const logout = () => {
   authStore.logout();
   router.push("/login");
