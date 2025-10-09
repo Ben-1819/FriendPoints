@@ -70,12 +70,15 @@ const friend = ref([]);
 
 const history = ref([]);
 
-const success = ref(null);
+const success = ref();
+
+const errors = ref([]);
 
 onMounted(() => {
   const token = localStorage.getItem("token");
 
   if (token) {
+    console.log(token);
     authStore.setToken(token);
     authStore.fetchUser();
     getHistoryRecord();
@@ -126,7 +129,7 @@ const updateHistoryRecord = async () => {
         reason: history.value.reason,
       },
       {
-        headers: { Authorization: `Bearer: ${authStore.token}` },
+        headers: { Authorization: `Bearer ${authStore.token}` },
       }
     );
     console.log(
