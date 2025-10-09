@@ -4,7 +4,7 @@
       <button class="abutton">
         <router-link class="blackText" to="/home">Home</router-link>
       </button>
-      <h1 id="title">Update Historical record</h1>
+      <h1 class="title">Update Historical record</h1>
     </div>
     <div class="mainArea">
       <div class="friendInformation">
@@ -15,7 +15,7 @@
       </div>
       <div class="updateHistoryArea">
         <form @submit.prevent="updateHistoryRecord">
-          <h2 id="title">Update the historical records reason or title</h2>
+          <h2 class="title">Update the historical records reason or title</h2>
           <div class="updateTitleInput">
             <label for="titleInput">Title:</label>
             <input
@@ -81,10 +81,9 @@ onMounted(() => {
     console.log(token);
     authStore.setToken(token);
     authStore.fetchUser();
-    getHistoryRecord();
-    setTimeout(() => {
-      getFriendRecord();
-    }, 1500);
+    getHistoryRecord()
+      .then(() => getFriendRecord())
+      .catch((err) => console.log("An error has occurred: ", err));
   } else if (token === null) {
     router.push("/login");
   }
