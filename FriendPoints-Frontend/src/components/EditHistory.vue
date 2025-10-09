@@ -153,4 +153,48 @@ const showHistory = () => {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.topscreen {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.mainArea {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.updateTitleInput {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.updateReasonInput {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.centred {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.abutton {
+  border-radius: 15%;
+  border: none;
+  background-color: #10b981;
+}
+
+.blackText {
+  color: black;
+}
+</style>
