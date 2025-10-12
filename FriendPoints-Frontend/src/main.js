@@ -23,6 +23,7 @@ import AllHistory from "./components/AllHistory.vue";
 import ShowHistory from "./components/ShowHistory.vue";
 import FriendHistories from "./components/FriendHistories.vue";
 import EditHistory from "./components/EditHistory.vue";
+import CurrentRankings from "./components/CurrentRankings.vue";
 
 const app = createApp(App);
 const pinia = createPinia();
@@ -103,6 +104,11 @@ const router = createRouter({
       name: "EditHistory",
       component: EditHistory,
       props: true,
+    },
+    {
+      path: "/currentRankings",
+      name: "CurrentRankings",
+      component: CurrentRankings,
     },
   ],
 });
