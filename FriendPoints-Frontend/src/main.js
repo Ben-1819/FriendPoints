@@ -13,6 +13,7 @@ import addFriend from "./components/addFriend.vue";
 import friendMenu from "./components/friendMenu.vue";
 import allFriends from "./components/allFriends.vue";
 import group1Friends from "./components/group1Friends.vue";
+import group2Friends from "./components/group2Friends.vue";
 import editFriendMenu from "./components/editFriendMenu.vue";
 import addPoints from "./components/addPoints.vue";
 import removePoints from "./components/removePoints.vue";
@@ -24,6 +25,7 @@ import ShowHistory from "./components/ShowHistory.vue";
 import FriendHistories from "./components/FriendHistories.vue";
 import EditHistory from "./components/EditHistory.vue";
 import CurrentRankings from "./components/CurrentRankings.vue";
+import Group2Friends from "./components/group2Friends.vue";
 
 const app = createApp(App);
 const pinia = createPinia();
@@ -50,6 +52,7 @@ const router = createRouter({
     { path: "/friendMenu", name: "FriendMenu", component: friendMenu },
     { path: "/allFriends", name: "AllFriends", component: allFriends },
     { path: "/group1Friends", name: "Group1Friends", component: group1Friends },
+    { path: "/group2Friends", name: "Group2Friends", component: Group2Friends },
     {
       path: "/editFriendMenu/:id",
       name: "EditFriendMenu",
