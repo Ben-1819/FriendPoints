@@ -1,4 +1,7 @@
 <template>
+  <div class="navbar">
+    <Navbar />
+  </div>
   <div>
     <h1 class="title">Friend Points</h1>
     <h2 class="title">Welcome {{ authStore.user.first_name }}</h2>
@@ -10,7 +13,6 @@
       <button data-cy="rankingsBtn" @click="goToCurrentRankings">
         Current Rankings
       </button>
-      <button data-cy="logoutBtn" @click="logout">Logout</button>
       <button @click="goToAllHistories">All history records</button>
     </div>
   </div>
@@ -21,6 +23,7 @@ import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
+import Navbar from "@/components/Navbar.vue";
 
 // Create a constant called router and set it to the useRouter method
 const router = useRouter();
@@ -98,5 +101,9 @@ const logout = () => {
   border: none;
   margin-left: 10px;
   margin-right: 10px;
+}
+
+.navbar {
+  margin-bottom: 10px;
 }
 </style>
