@@ -73,4 +73,24 @@ const goToFriendsHistories = (id) => {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped>
+.topScreen {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.title {
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+.abutton {
+  border-radius: 15%;
+  border: none;
+  background-color: #10b981;
+}
+</style>
