@@ -1,5 +1,13 @@
 <template>
-  <div></div>
+  <div>
+    <ul>
+      <li @click="goToHome">Home</li>
+      <li @click="goToYourFriends">Your Friends</li>
+      <li @click="goToCurrentRankings">Current Rankings</li>
+      <li @click="goToAllHistories">All Histories</li>
+      <li @click="logout">Logout</li>
+    </ul>
+  </div>
 </template>
 
 <script setup>
