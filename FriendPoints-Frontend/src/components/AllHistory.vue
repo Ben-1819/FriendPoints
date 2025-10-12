@@ -4,9 +4,6 @@
   </div>
   <div>
     <div class="topscreen">
-      <button class="abutton">
-        <router-link class="blackText" to="/home">home</router-link>
-      </button>
       <h1 id="title">History Index</h1>
     </div>
     <div class="mainArea">
@@ -52,7 +49,7 @@ onMounted(() => {
     authStore.fetchUser();
     getHistoryRecords();
   } else if (token === null) {
-    router.push("/login");
+    logout();
   }
 });
 
@@ -78,13 +75,20 @@ const getHistoryRecords = async () => {
 const truncateText = (str, maxLength) => {
   return str.length > maxLength ? str.substring(0, maxLength) + "..." : str;
 };
+
+const logout = () => {
+  authStore.logout();
+  router.push({
+    name: "Login",
+  });
+};
 </script>
 
 <style scoped>
 .topscreen {
   display: flex;
   flex-direction: row;
-  justify-content: start;
+  justify-content: center;
   align-items: center;
   margin-bottom: 10px;
 }
