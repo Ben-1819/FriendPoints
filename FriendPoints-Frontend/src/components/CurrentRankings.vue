@@ -19,6 +19,7 @@ onMounted(() => {
   if (token) {
     authStore.setToken(token);
     authStore.fetchUser();
+    getFriendRankings();
   } else if (token === null) {
     router.push({
       name: "Login",
