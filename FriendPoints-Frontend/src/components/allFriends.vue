@@ -4,7 +4,6 @@
   </div>
   <div>
     <div class="topscreen">
-      <button class="aButton" @click="backHome">Back to home</button>
       <h1 class="title">All Friends</h1>
     </div>
 
@@ -53,8 +52,7 @@ onMounted(() => {
     console.log("Calling the allFriends method");
     allFriends();
   } else if (token === null) {
-    // If the token is null push the user back to the login screen
-    router.push("/login");
+    logout();
   }
 });
 
@@ -76,15 +74,21 @@ const allFriends = async () => {
   }
 };
 
-// backHome method - Takes the user back to the home component
-const backHome = () => {
-  // Push the user back to the home component
-  router.push("/home");
-};
-
 // editFriend method - Takes the user to the edit friend component
 const editFriend = (id) => {
-  router.push(`/editFriendMenu/${id}`);
+  router.push({
+    name: "EditFriendMenu",
+    params: {
+      id: id,
+    },
+  });
+};
+
+const logout = () => {
+  authStore.logout();
+  router.push({
+    name: "Login",
+  });
 };
 </script>
 
@@ -110,7 +114,7 @@ const editFriend = (id) => {
 .topscreen {
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
 }
 
