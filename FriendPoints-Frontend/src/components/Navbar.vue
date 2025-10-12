@@ -50,7 +50,7 @@ const goToCurrentRankings = () => {
 
 const goToAllHistories = () => {
   router.push({
-    name: "AllHistories",
+    name: "AllHistory",
   });
 };
 
