@@ -14,8 +14,6 @@
         </li>
       </ul>
     </div>
-
-    <button class="homebtn" @click="home">Back to home</button>
   </div>
 </template>
 
@@ -51,11 +49,7 @@ onMounted(() => {
     // Call the allUsers method
     allUsers();
   } else if (token === null) {
-    console.log(
-      "No token in local storage, sending the user back to the login screen"
-    );
-    // Send the user back to the login screen
-    router.push("/login");
+    logout();
   }
 });
 
@@ -75,20 +69,27 @@ const allUsers = async () => {
     // Set the users constant to the users returned in the json response
     users.value = response.data.options;
   } catch (error) {
-    console.log("An error has occured");
-    console.log("An error has occured".error);
+    console.log("An error has occurred");
+    console.log("An error has occurred".error);
   }
-};
-
-// Home method - takes the user back to the home screen
-const home = () => {
-  router.push("/home");
 };
 
 // addFriend method - Takes the user to the add friend component
 const addFriend = (id) => {
   console.log("addFriend running");
-  router.push(`/addFriend/${id}`);
+  router.push({
+    name: "AddFriend",
+    params: {
+      id: id,
+    },
+  });
+};
+
+const logout = () => {
+  authStore.logout();
+  router.push({
+    name: "Login",
+  });
 };
 </script>
 
