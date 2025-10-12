@@ -6,7 +6,11 @@
     </div>
     <div class="mainArea">
       <ol>
-        <li v-for="friend in friends" :key="friend.id">
+        <li
+          v-for="friend in friends"
+          :key="friend.id"
+          @click="goToFriendsHistories(friend.id)"
+        >
           {{ friend.first_name }} {{ friend.last_name }} -
           {{ friend.points }} points
         </li>
@@ -56,6 +60,15 @@ const getFriendRankings = async () => {
 const goToHome = () => {
   router.push({
     name: "Home",
+  });
+};
+
+const goToFriendsHistories = (id) => {
+  router.push({
+    name: "FriendHistories",
+    params: {
+      id: id,
+    },
   });
 };
 </script>
