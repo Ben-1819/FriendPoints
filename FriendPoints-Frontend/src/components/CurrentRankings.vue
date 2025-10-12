@@ -1,5 +1,18 @@
 <template>
-  <div></div>
+  <div>
+    <div class="topScreen">
+      <button class="abutton" @click="goToHome">Home</button>
+      <h1 class="title">Current rankings</h1>
+    </div>
+    <div class="mainArea">
+      <ol>
+        <li v-for="friend in friends" :key="friend.id">
+          {{ friend.first_name }} {{ friend.last_name }} -
+          {{ friend.points }} points
+        </li>
+      </ol>
+    </div>
+  </div>
 </template>
 
 <script setup>
