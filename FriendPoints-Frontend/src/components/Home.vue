@@ -7,7 +7,9 @@
       <button data-cy="friendsBtn" @click="friendsMenu">Your Friends</button>
     </div>
     <div class="buttonGroup">
-      <button data-cy="rankingsBtn">Current Rankings</button>
+      <button data-cy="rankingsBtn" @click="goToCurrentRankings">
+        Current Rankings
+      </button>
       <button data-cy="logoutBtn" @click="logout">Logout</button>
       <button @click="goToAllHistories">All history records</button>
     </div>
@@ -57,7 +59,11 @@ const friendsMenu = () => {
   });
 };
 
-const currentRankings = () => {};
+const goToCurrentRankings = () => {
+  router.push({
+    name: "CurrentRankings",
+  });
+};
 
 const goToAllHistories = () => {
   router.push({
