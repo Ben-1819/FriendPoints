@@ -50,29 +50,41 @@ onMounted(() => {
 // home method - takes the user back to the home screen
 const home = () => {
   // Push the user to to the component
-  router.push("/home");
+  router.push({
+    name: "Home",
+  });
 };
 
 // allFriends method - takes the user to the allFriends component
 const allFriends = () => {
   // Push the user to the allFriends component
-  router.push("/allFriends");
+  router.push({
+    name: "AllFriends",
+  });
 };
 
 // notFriends method - takes the user to the allUsers component
 const notFriends = () => {
   // Push the user to the allUsers component
-  router.push("/users");
+  router.push({
+    name: "Users",
+  });
 };
 
 // group1Friends method - takes the user to the group 1 friends component
 const group1Friends = () => {
   // Push the user to the group1Friends component
-  router.push("/group1Friends");
+  router.push({
+    name: "Group1Friends",
+  });
 };
 
 // group2Friends method - takes the user to the group 2 friends component
-const group2Friends = () => {};
+const group2Friends = () => {
+  router.push({
+    name: "Group2Friends",
+  });
+};
 </script>
 
 <style scoped>
