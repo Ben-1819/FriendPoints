@@ -42,8 +42,8 @@ onMounted(() => {
     // Fetch the user from the auth store
     authStore.fetchUser();
   } else if (token === null) {
-    // If the token doesn't exist then push the user back to the login view
-    router.push("/login");
+    // If the token doesn't exist then log the user out and push them back to the login component
+    logout();
   }
 });
 
@@ -83,6 +83,13 @@ const group1Friends = () => {
 const group2Friends = () => {
   router.push({
     name: "Group2Friends",
+  });
+};
+
+const logout = () => {
+  authStore.logout();
+  router.push({
+    name: "Login",
   });
 };
 </script>
