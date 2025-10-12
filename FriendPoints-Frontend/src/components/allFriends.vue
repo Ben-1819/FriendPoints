@@ -1,4 +1,7 @@
 <template>
+  <div class="navbar">
+    <Navbar />
+  </div>
   <div>
     <div class="topscreen">
       <button class="aButton" @click="backHome">Back to home</button>
@@ -24,6 +27,7 @@ import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
+import Navbar from "./Navbar.vue";
 
 // Create a constant authStore and set it to the useAuthStore method
 const authStore = useAuthStore();
@@ -108,5 +112,9 @@ const editFriend = (id) => {
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
+}
+
+.navbar {
+  margin-bottom: 10px;
 }
 </style>

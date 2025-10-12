@@ -1,4 +1,7 @@
 <template>
+  <div class="navbar">
+    <Navbar />
+  </div>
   <div>
     <div class="topscreen">
       <button class="abutton">
@@ -27,6 +30,7 @@ import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useAuthStore } from "@/stores/auth";
 import { useRoute, useRouter } from "vue-router";
+import Navbar from "./Navbar.vue";
 
 // Create a constant called authStore and set it to the value of the useAuthStore method
 const authStore = useAuthStore();
@@ -160,5 +164,9 @@ const home = () => {
 
 #blackText {
   color: black;
+}
+
+.navbar {
+  margin-bottom: 10px;
 }
 </style>

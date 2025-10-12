@@ -1,4 +1,7 @@
 <template>
+  <div class="navbar">
+    <Navbar />
+  </div>
   <div>
     <div class="topscreen">
       <button class="abutton">
@@ -54,6 +57,7 @@ import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
+import Navbar from "./Navbar.vue";
 
 const authStore = useAuthStore();
 
@@ -196,5 +200,9 @@ const showHistory = () => {
 
 .blackText {
   color: black;
+}
+
+.navbar {
+  margin-bottom: 10px;
 }
 </style>

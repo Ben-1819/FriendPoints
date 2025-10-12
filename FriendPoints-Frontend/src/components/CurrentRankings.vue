@@ -1,4 +1,7 @@
 <template>
+  <div class="navbar">
+    <Navbar />
+  </div>
   <div>
     <div class="topScreen">
       <button class="abutton" @click="goToHome">Home</button>
@@ -24,6 +27,7 @@ import { ref, onMounted } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import axios from "axios";
 import { useRouter } from "vue-router";
+import Navbar from "./Navbar.vue";
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -92,5 +96,9 @@ const goToFriendsHistories = (id) => {
   border-radius: 15%;
   border: none;
   background-color: #10b981;
+}
+
+.navbar {
+  margin-bottom: 10px;
 }
 </style>

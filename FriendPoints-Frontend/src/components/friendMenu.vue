@@ -1,4 +1,7 @@
 <template>
+  <div class="navbar">
+    <Navbar />
+  </div>
   <div>
     <div class="topscreen">
       <button class="abutton" @click="home">Home</button>
@@ -19,6 +22,7 @@
 import { onMounted } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
+import Navbar from "./Navbar.vue";
 
 // Create a constant called authStore and set it to the useAuthStore method
 const authStore = useAuthStore();
@@ -99,6 +103,10 @@ const group2Friends = () => {};
   justify-content: center;
   align-items: center;
   margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.navbar {
   margin-bottom: 10px;
 }
 </style>

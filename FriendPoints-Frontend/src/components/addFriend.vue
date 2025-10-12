@@ -1,4 +1,7 @@
 <template>
+  <div class="navbar">
+    <Navbar />
+  </div>
   <div>
     <div class="topScreen">
       <button class="backBtn" @click="backToUsers">Back</button>
@@ -53,6 +56,7 @@
 </template>
 
 <script setup>
+import Navbar from "./Navbar.vue";
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useAuthStore } from "@/stores/auth";
@@ -184,5 +188,9 @@ const backToUsers = () => {
 
 .topScreen button {
   margin-right: 25px;
+}
+
+.navbar {
+  margin-bottom: 10px;
 }
 </style>

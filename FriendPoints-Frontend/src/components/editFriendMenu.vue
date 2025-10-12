@@ -1,4 +1,7 @@
 <template>
+  <div class="navbar">
+    <Navbar />
+  </div>
   <div>
     <div class="topscreen">
       <button class="abutton" @click="home">Home</button>
@@ -19,6 +22,7 @@
 import { onMounted } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { useRoute, useRouter } from "vue-router";
+import Navbar from "./Navbar.vue";
 
 // Create a constant called authStore and set it to the useAuthStore method
 const authStore = useAuthStore();
@@ -95,5 +99,9 @@ const home = () => {
   border-radius: 15%;
   background-color: #10b981;
   border: none;
+}
+
+.navbar {
+  margin-bottom: 10px;
 }
 </style>

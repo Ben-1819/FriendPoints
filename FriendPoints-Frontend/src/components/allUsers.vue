@@ -1,4 +1,7 @@
 <template>
+  <div class="navbar">
+    <Navbar />
+  </div>
   <div>
     <h1 class="title">All Users</h1>
     <div class="userList">
@@ -21,6 +24,7 @@ import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useAuthStore } from "@/stores/auth";
 import { useRouter } from "vue-router";
+import Navbar from "./Navbar.vue";
 
 // Create a constant called authStore and set it to the useAuthStore method
 const authStore = useAuthStore();
@@ -105,5 +109,9 @@ const addFriend = (id) => {
   border-radius: 15%;
   background-color: #10b981;
   border: none;
+}
+
+.navbar {
+  margin-bottom: 10px;
 }
 </style>

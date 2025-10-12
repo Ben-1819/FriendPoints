@@ -1,4 +1,7 @@
 <template>
+  <div class="navbar">
+    <Navbar />
+  </div>
   <div>
     <div class="topscreen">
       <button class="abutton">
@@ -66,6 +69,7 @@ import { ref, onMounted } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import axios from "axios";
 import { useRouter, useRoute } from "vue-router";
+import Navbar from "./Navbar.vue";
 
 const authStore = useAuthStore();
 
@@ -260,5 +264,9 @@ const removePoints = async () => {
 
 #blackText {
   color: black;
+}
+
+.navbar {
+  margin-bottom: 10px;
 }
 </style>
