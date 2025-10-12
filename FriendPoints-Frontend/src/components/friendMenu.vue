@@ -4,7 +4,6 @@
   </div>
   <div>
     <div class="topscreen">
-      <button class="abutton" @click="home">Home</button>
       <h1 class="title">Friends menu</h1>
     </div>
     <div class="options">
@@ -98,7 +97,7 @@ const logout = () => {
 .topscreen {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin-bottom: 10px;
 }
