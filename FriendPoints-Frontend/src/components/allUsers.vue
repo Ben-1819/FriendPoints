@@ -99,13 +99,6 @@ const logout = () => {
   font-size: 1.2rem;
 }
 
-.homebtn {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  margin-top: 10px;
-}
-
 .addFriendBtn {
   border-radius: 15%;
   background-color: #10b981;
