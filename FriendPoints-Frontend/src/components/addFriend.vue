@@ -34,13 +34,13 @@
         </div>
         <div class="inputGroup">
           <label data-cy="pointsInputLabel" for="pointsInput" class="inputLabel"
-            >Enter the users inital amount of points:</label
+            >Enter the users initial amount of points:</label
           >
           <input
             data-cy="pointsInput"
             id="pointsInput"
             type="number"
-            placeholder="Enter inital points"
+            placeholder="Enter initial points"
             v-model="points"
             @input="clearFieldErrors('points')"
           />
@@ -98,8 +98,7 @@ onMounted(() => {
     authStore.fetchUser();
     console.log("ID prop:", id);
   } else if (token === null) {
-    console.log("No token in storage, sending the user to the login screen");
-    router.push("/login");
+    logout();
   }
 });
 
@@ -132,8 +131,8 @@ const addFriend = async () => {
       router.push("/home");
     }, 2000);
   } catch (error) {
-    // Log that an error occured
-    console.log("An error has occured");
+    // Log that an error occurred
+    console.log("An error has occurred");
     console.log("An error has occurred".error);
 
     // Check if there were validation errors
@@ -153,7 +152,16 @@ const clearFieldErrors = (field) => {
 
 // backToUsers method - Brings the user back to the users list
 const backToUsers = () => {
-  router.push("/users");
+  router.push({
+    name: "Users",
+  });
+};
+
+const logout = () => {
+  authStore.logout();
+  router.push({
+    name: "Login",
+  });
 };
 </script>
 
