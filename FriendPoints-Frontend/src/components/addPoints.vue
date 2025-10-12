@@ -4,9 +4,6 @@
   </div>
   <div>
     <div class="topscreen">
-      <button class="abutton">
-        <router-link id="blackText" to="/home">Home</router-link>
-      </button>
       <h1 class="title">Add Points</h1>
     </div>
     <div class="mainArea">
@@ -106,7 +103,7 @@ onMounted(() => {
     authStore.fetchUser();
     getFriend();
   } else if (token === null) {
-    router.push("/home");
+    logout();
   }
 });
 
@@ -170,12 +167,24 @@ const addPoints = async () => {
     // Wait for 2 seconds
     console.log("Sending the user to the showFriend component");
     setTimeout(() => {
-      router.push(`/showFriend/${id}`);
+      router.push({
+        name: "ShowFriend",
+        params: {
+          id: id,
+        },
+      });
     }, 2000);
   } catch (error) {
     console.log("An error has occurred".error);
     errors.value = error.response.data.errors;
   }
+};
+
+const logout = () => {
+  authStore.logout();
+  router.push({
+    name: "Login",
+  });
 };
 </script>
 
@@ -183,7 +192,7 @@ const addPoints = async () => {
 .topscreen {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   font-size: 1.2rem;
   margin-bottom: 10px;
