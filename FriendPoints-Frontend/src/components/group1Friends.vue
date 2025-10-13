@@ -73,7 +73,7 @@ const getGroup1Friends = async () => {
 // editFriend method - takes the user to the edit friend menu
 const editFriend = (id) => {
   router.push({
-    name: "EditFriend",
+    name: "EditFriendMenu",
     params: {
       id: id,
     },
