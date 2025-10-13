@@ -4,9 +4,6 @@
   </div>
   <div>
     <div class="topscreen">
-      <button class="abutton">
-        <router-link id="blackText" to="/home">Home</router-link>
-      </button>
       <h1 class="title">Confirm delete friend</h1>
     </div>
     <div class="mainArea">
@@ -63,8 +60,7 @@ onMounted(() => {
     console.log("getFriend method running");
     getFriend();
   } else if (token === null) {
-    // Push the user back to the login page
-    router.push("/login");
+    logout();
   }
 });
 
@@ -112,8 +108,11 @@ const getFriend = async () => {
   }
 };
 
-const home = () => {
-  router.push("/home");
+const logout = () => {
+  authStore.logout();
+  router.push({
+    name: "Login",
+  });
 };
 </script>
 
@@ -121,7 +120,7 @@ const home = () => {
 .topscreen {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin-bottom: 10px;
 }
