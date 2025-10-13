@@ -4,9 +4,6 @@
   </div>
   <div>
     <div class="topscreen">
-      <button class="abutton">
-        <router-link class="blackText" to="/home">Home</router-link>
-      </button>
       <h1 class="title">Update Historical record</h1>
     </div>
     <div class="mainArea">
@@ -89,7 +86,7 @@ onMounted(() => {
       .then(() => getFriendRecord())
       .catch((err) => console.log("An error has occurred: ", err));
   } else if (token === null) {
-    router.push("/login");
+    logout();
   }
 });
 
@@ -155,13 +152,20 @@ const showHistory = () => {
     params: history.value.id,
   });
 };
+
+const logout = () => {
+  authStore.logout();
+  router.push({
+    name: "Login",
+  });
+};
 </script>
 
 <style scoped>
 .topscreen {
   display: flex;
   flex-direction: row;
-  justify-content: start;
+  justify-content: center;
   align-items: center;
   margin-top: 10px;
   margin-bottom: 10px;
