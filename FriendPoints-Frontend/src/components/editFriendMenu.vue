@@ -4,7 +4,6 @@
   </div>
   <div>
     <div class="topscreen">
-      <button class="abutton" @click="home">Home</button>
       <h1 class="title">Edit friends menu</h1>
     </div>
     <div class="options">
@@ -44,34 +43,56 @@ onMounted(() => {
     authStore.setToken(token);
     authStore.fetchUser();
   } else if (token === null) {
-    // Push the user back to the login page
-    router.push("/login");
+    logout();
   }
 });
 
 // addPoints method
 const addPoints = (id) => {
-  router.push(`/addPoints/${id}`);
+  router.push({
+    name: "AddPoints",
+    params: {
+      id: id,
+    },
+  });
 };
 
 // removePoints method
 const removePoints = (id) => {
-  router.push(`/removePoints/${id}`);
+  router.push({
+    name: "RemovePoints",
+    params: {
+      id: id,
+    },
+  });
 };
 
 // changeGroup method
 const changeGroup = (id) => {
-  router.push(`/changeGroup/${id}`);
+  router.push({
+    name: "ChangeGroup",
+    params: {
+      id,
+      id,
+    },
+  });
 };
 
 // deleteFriend method
 const deleteFriend = (id) => {
-  router.push(`/deleteFriend/${id}`);
+  router.push({
+    name: "DeleteFriend",
+    params: {
+      id: id,
+    },
+  });
 };
 
-// home method
-const home = () => {
-  router.push("/home");
+const logout = () => {
+  authStore.logout();
+  router.push({
+    name: "Login",
+  });
 };
 </script>
 
@@ -79,7 +100,7 @@ const home = () => {
 .topscreen {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 }
 
