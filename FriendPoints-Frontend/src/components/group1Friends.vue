@@ -4,7 +4,6 @@
   </div>
   <div>
     <div class="topscreen">
-      <button class="abutton" @click="home">Home</button>
       <h1 class="title">Group 1 friends</h1>
     </div>
     <div class="group1List">
@@ -12,7 +11,9 @@
         <li v-for="friend in group1Friends" :key="friend.id">
           {{ friend.first_name }} {{ friend.last_name }} - Points:
           {{ friend.points }}
-          <button class="abutton">Edit friend</button>
+          <button class="abutton" @click="goToEditFriend(friend.id)">
+            Edit friend
+          </button>
         </li>
       </ul>
     </div>
@@ -49,7 +50,7 @@ onMounted(() => {
 
     getGroup1Friends;
   } else if (token === null) {
-    router.push("/login");
+    logout();
   }
 });
 
@@ -69,20 +70,29 @@ const getGroup1Friends = async () => {
   }
 };
 
-// home method - takes the user back to the home screen when clicked
-const home = () => {
-  router.push("/home");
+// editFriend method - takes the user to the edit friend menu
+const editFriend = (id) => {
+  router.push({
+    name: "EditFriend",
+    params: {
+      id: id,
+    },
+  });
 };
 
-// editFriend method - takes the user to the edit friend menu
-const editFriend = () => {};
+const logout = () => {
+  authStore.logout();
+  router.push({
+    name: "Logout",
+  });
+};
 </script>
 
 <style scoped>
 .topscreen {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin-bottom: 10px;
 }
