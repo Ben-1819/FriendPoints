@@ -4,7 +4,6 @@
   </div>
   <div>
     <div class="topScreen">
-      <button class="abutton" @click="goToHome">Home</button>
       <h1 class="title">Current rankings</h1>
     </div>
     <div class="mainArea">
@@ -42,9 +41,7 @@ onMounted(() => {
     authStore.fetchUser();
     getFriendRankings();
   } else if (token === null) {
-    router.push({
-      name: "Login",
-    });
+    logout();
   }
 });
 
@@ -61,9 +58,10 @@ const getFriendRankings = async () => {
   }
 };
 
-const goToHome = () => {
+const login = () => {
+  authStore.logout();
   router.push({
-    name: "Home",
+    name: "Login",
   });
 };
 
@@ -81,7 +79,7 @@ const goToFriendsHistories = (id) => {
 .topScreen {
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
   margin-top: 10px;
   margin-bottom: 10px;
