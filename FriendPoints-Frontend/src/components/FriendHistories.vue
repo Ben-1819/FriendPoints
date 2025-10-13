@@ -4,9 +4,6 @@
   </div>
   <div>
     <div class="topscreen">
-      <button class="abutton">
-        <router-link class="blackText" to="/home">Home</router-link>
-      </button>
       <h1 id="title">
         {{ friend.first_name + " " + friend.last_name }}'s Histories
       </h1>
@@ -21,10 +18,8 @@
           <h4 class="historyText">{{ history.title }}</h4>
           <p class="historyText">{{ history.reason }}</p>
           <div class="centred">
-            <button class="abutton">
-              <router-link class="blackText" :to="`/showHistory/${history.id}`"
-                >View History</router-link
-              >
+            <button class="abutton" @click="goToHistory(history.id)">
+              View History
             </button>
           </div>
         </div>
@@ -66,7 +61,7 @@ onMounted(() => {
     getFriendRecord();
     getFriendsHistoryRecords();
   } else if (token === null) {
-    router.push("/login");
+    logout();
   }
 });
 
@@ -106,13 +101,29 @@ const getFriendsHistoryRecords = async () => {
     console.log("An error has occurred: ", error);
   }
 };
+
+const logout = () => {
+  authStore.logout();
+  router.push({
+    name: "Login",
+  });
+};
+
+const goToHistory = (id) => {
+  router.push({
+    name: "ShowHistory",
+    params: {
+      id: id,
+    },
+  });
+};
 </script>
 
 <style scoped>
 .topscreen {
   display: flex;
   flex-direction: row;
-  justify-content: start;
+  justify-content: center;
   align-items: center;
   margin-top: 10px;
   margin-bottom: 10px;
