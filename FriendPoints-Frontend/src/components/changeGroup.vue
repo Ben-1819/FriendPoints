@@ -4,9 +4,6 @@
   </div>
   <div>
     <div class="topscreen">
-      <button class="abutton">
-        <router-link id="blackText" to="/home">Home</router-link>
-      </button>
       <h1 id="title">Change Group</h1>
     </div>
     <div class="mainArea">
@@ -74,7 +71,7 @@ const success = ref("");
 const groups = ref(["group1", "group2", "both"]);
 
 const availableGroups = computed(() => {
-  // Guard for inital render
+  // Guard for initial render
   const current = friend.value.group ?? "";
   return groups.value.filter((g) => g !== current);
 });
@@ -88,7 +85,7 @@ onMounted(() => {
     authStore.fetchUser();
     getFriend();
   } else if (token === null) {
-    router.push("/home");
+    logout();
   }
 });
 
@@ -137,13 +134,20 @@ const changeGroup = async () => {
     }
   }
 };
+
+const logout = () => {
+  authStore.logout();
+  router.push({
+    name: "Login",
+  });
+};
 </script>
 
 <style scoped>
 .topscreen {
   display: flex;
   flex-direction: row;
-  justify-content: start;
+  justify-content: center;
   align-items: center;
   margin-bottom: 10px;
 }
