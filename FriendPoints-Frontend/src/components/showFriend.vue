@@ -4,10 +4,7 @@
   </div>
   <div>
     <div class="topscreen">
-      <button class="abutton">
-        <router-link id="blackText" to="/home">Home</router-link>
-        <h1 id="title">Friend Information</h1>
-      </button>
+      <h1 id="title">Friend Information</h1>
     </div>
     <div class="mainArea">
       <p>Name: {{ (friend.first_name, friend.last_name) }}</p>
@@ -15,27 +12,15 @@
       <p>Points: {{ friend.points }}</p>
     </div>
     <div class="options">
-      <button class="abutton">
-        <router-link id="blackText" :to="`/addPoints/${id}`"
-          >Add Points</router-link
-        >
-      </button>
-      <button class="abutton">
-        <router-link id="blackText" :to="`/removePoints/${id}`"
-          >Remove Points</router-link
-        >
+      <button class="abutton" @click="goToAddPoints(id)">Add Points</button>
+      <button class="abutton" @click="goToRemovePoints(id)">
+        Remove Points
       </button>
     </div>
     <div class="options">
-      <button class="abutton">
-        <router-link id="blackText" :to="`/changeGroup/${id}`"
-          >Change Group</router-link
-        >
-      </button>
-      <button class="abutton">
-        <router-link id="blackText" :to="`/deleteFriend/${id}`"
-          >Delete Friend</router-link
-        >
+      <button class="abutton" @click="goToChangeGroup(id)">Change Group</button>
+      <button class="abutton" @click="goToDeleteFriend(id)">
+        Delete Friend
       </button>
     </div>
   </div>
@@ -66,7 +51,7 @@ onMounted(() => {
     authStore.fetchUser();
     getFriendRecord();
   } else if (token === null) {
-    router.push("/home");
+    logout();
   }
 });
 
@@ -81,6 +66,49 @@ const getFriendRecord = async () => {
   } catch (error) {
     console.log("An error has occurred".error);
   }
+};
+
+const logout = () => {
+  authStore.logout();
+  router.push({
+    name: "Login",
+  });
+};
+
+const goToAddPoints = (id) => {
+  router.push({
+    name: "AddPoints",
+    params: {
+      id: id,
+    },
+  });
+};
+
+const goToRemovePoints = (id) => {
+  router.push({
+    name: "RemovePoints",
+    params: {
+      id: id,
+    },
+  });
+};
+
+const goToChangeGroup = (id) => {
+  router.push({
+    name: "ChangeGroup",
+    params: {
+      id: id,
+    },
+  });
+};
+
+const goToDeleteFriend = (id) => {
+  router.push({
+    name: "DeleteFriend",
+    params: {
+      id: id,
+    },
+  });
 };
 </script>
 
