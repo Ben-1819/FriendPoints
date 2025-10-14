@@ -4,9 +4,6 @@
   </div>
   <div>
     <div class="topscreen">
-      <button class="abutton">
-        <router-link class="blackText" to="/home">Home</router-link>
-      </button>
       <h1 id="title">{{ history.title }}</h1>
     </div>
     <div class="mainArea">
@@ -81,7 +78,7 @@ onMounted(() => {
     console.log(
       "Token doesn't exist or has expired, sending the user to the login component"
     );
-    router.push("/login");
+    logout();
   }
 });
 
@@ -149,11 +146,20 @@ const deleteHistoryRecord = async () => {
 
     success.value = response.data.success;
     setTimeout(() => {
-      router.push("/home");
+      router.push({
+        name: "Home",
+      });
     }, 2000);
   } catch (error) {
     console.log("An error has occurred: ", error);
   }
+};
+
+const logout = () => {
+  authStore.logout();
+  router.push({
+    name: "Logout",
+  });
 };
 </script>
 
@@ -161,7 +167,7 @@ const deleteHistoryRecord = async () => {
 .topscreen {
   display: flex;
   flex-direction: row;
-  justify-content: start;
+  justify-content: center;
   margin-top: 10px;
   margin-bottom: 10px;
 }
